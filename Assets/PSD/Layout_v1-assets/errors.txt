@@ -1,0 +1,1 @@
+[2019-2-8 22:18:24] layer "info@1-foto.com": Unsupported extension: com
