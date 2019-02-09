@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import {Route} from 'react-router-dom';
 
-// import FirebaseConfig from '../Firebase/Firebase';
-// import Firebase from 'firebase/app';
-// import 'firebase/storage';
-
 import Header from '../Header/Header';
 import GalleryImage from './GalleryImage/GalleryImage'; 
 
@@ -16,7 +12,6 @@ class Content extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props);
     }
 
     getRoute = () => {
@@ -48,3 +43,8 @@ export default Content;
 // Generate GalleryImage image components
 // Display images
 // Hide Spinner 
+
+
+// import FirebaseConfig from '../Firebase/Firebase';
+// import Firebase from 'firebase/app';
+// import 'firebase/storage';
