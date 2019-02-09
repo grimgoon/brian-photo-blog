@@ -1,0 +1,41 @@
+.header {
+    display: flex;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 40px;
+    
+}
+
+.logo {
+    width: 200px;
+    min-width: 200px;
+    height: 202px;
+    margin: 40px auto;
+    
+}
+
+
+
+/* Smaller Screens */
+@media only screen  and (min-width : 768px) {
+    .header {
+        width: 68%;
+    }
+
+    .logo {
+        width: 100px;
+        height: 101px;
+        min-width: 100px;
+        margin-top: 0;
+    }
+}
+
+/* Desktops & Laptops */
+@media only screen  and (min-width : 1224px) {
+
+    .logo {
+        width: 200px;
+        height: 202px;
+        min-width: 200px;
+    }
+}
