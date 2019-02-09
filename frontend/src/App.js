@@ -2,19 +2,16 @@ import React, { Component } from 'react';
 import './App.css';
 import  {Route, Switch} from 'react-router-dom';
 
-import Home from './components/Home/Home';
-
-import Header from './components/Header/Header';
+import Content from './components/Content/Content';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <Header/>
         <Switch>
-            <Route path="/" exact component={Home}/>
+            <Route path="/" exact component={Content}/>
+            <Route path="/category" component={Content}/>
           </Switch>
-         
       </div>
     );
   }
