@@ -1,11 +1,9 @@
 import React from 'react';
 
-const GalleryImage = () => {
+const GalleryImage = (props) => {
 
     return(
-        <div>
-            
-        </div>
+        <img src={props.baseURL + props.id + "." + props.fileType + props.queryString} alt="meep" />
     )
 }
 

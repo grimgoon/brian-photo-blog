@@ -15,26 +15,28 @@ class Content extends Component {
     state = {
         errorMessage : false,
         categories: null,
+        photographList: null,
         route: null,
     }
 
     componentDidMount() {
         this.getCategories();
+        console.log("Did Mount");
     }
 
     getPhotographList = () => {
 
         axios.get('/photographs.json')
         .then(res => {
-            let categoryLinks = [];
+            let photographs = [];
             for(let key in  res.data) {
-                categoryLinks.push({
+                photographs.push({
                     id: key,
-                    value : res.data[key]
+                    ...res.data[key]
                 });
             }
 
-            this.setState({categories : categoryLinks});
+            this.setState({photographList : photographs});
         }).catch(err => {
             // Fix Error Handling
         });
@@ -78,7 +80,6 @@ class Content extends Component {
                 else {
                     // RETURN 404
                 }
-    
             }
 
             if(routeCheck) {
@@ -94,15 +95,14 @@ class Content extends Component {
         else {
             // Error Handling
         }
-          
     }
 
     setRoute2 = () => {
         if(this.state.categories) {
-            let routes = [<Route exact path="/" render={() => <GalleryImages filter="all"></GalleryImages>}/>];
+            let routes = [<Route key={0} exact path="/" render={() => <GalleryImages error={this.state.errorMessage} photoList={this.state.photographList} getList={this.getPhotographList} filter="all"></GalleryImages>}/>];
             for(let key in this.state.categories) {
                 let categoryId = this.state.categories[key].id;
-                routes.push(<Route exact path={"/category/" + categoryId} render={() => <GalleryImages filter={categoryId}></GalleryImages>}/>);
+                routes.push(<Route key={key+1} exact path={"/category/" + categoryId} render={() => <GalleryImages error={this.state.errorMessage} photoList={this.state.photographList} getList={this.getPhotographList} filter={categoryId}></GalleryImages>}/>);
             }
 
             let returnRoutes = <>{routes.map((route) => (route))}</>
@@ -111,7 +111,6 @@ class Content extends Component {
         else {
             // 404 Route
         }
-
     }
 
     render() {
@@ -125,7 +124,6 @@ class Content extends Component {
             </>
         );
     }
-
 }
 
 export default Content;
@@ -139,5 +137,3 @@ export default Content;
 // Generate GalleryImage image components
 // Display images
 // Hide Spinner 
-
-
