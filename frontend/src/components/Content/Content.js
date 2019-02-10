@@ -7,6 +7,7 @@ import axios from  '../Firebase/Database/Database';
 // import 'firebase/storage';
 
 import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
 import GalleryImages from './GalleryImages/GalleryImages'; 
 
 
@@ -119,9 +120,11 @@ class Content extends Component {
 
         return (
             <>
-            <Header/>
-            {routes}
+                <Header/>
+                {routes}
+                <Footer/>
             </>
+
         );
     }
 }
