@@ -1,0 +1,70 @@
+{
+  "done": [],
+  "in-progress": [
+    {
+      "assignedTo": {
+        "name": "grimgoon"
+      },
+      "creation_time": "2019-02-10T11:47:10.859Z",
+      "id": "4",
+      "references": [],
+      "title": "Upload Button"
+    }
+  ],
+  "testing": [],
+  "todo": [
+    {
+      "assignedTo": {
+        "name": "grimgoon"
+      },
+      "creation_time": "2019-02-10T11:47:02.103Z",
+      "details": {
+        "content": "- Auth System\n- Migrate upload button\n- Drag and Drop images system\n- Create, Delete, Modify Categories\n- Delete Images\n",
+        "mime": "text/markdown"
+      },
+      "id": "3",
+      "references": [],
+      "title": "Admin Panel"
+    },
+    {
+      "assignedTo": {
+        "name": "grimgoon"
+      },
+      "creation_time": "2019-02-10T11:46:14.002Z",
+      "id": "1",
+      "references": [],
+      "title": "Create Spinner when launching website"
+    },
+    {
+      "assignedTo": {
+        "name": "grimgoon"
+      },
+      "creation_time": "2019-02-10T11:46:44.873Z",
+      "description": {
+        "content": "Figure out how to scale panoramas etc. properly",
+        "mime": "text/markdown"
+      },
+      "id": "2",
+      "references": [],
+      "title": "Display images properly & scale"
+    },
+    {
+      "assignedTo": {
+        "name": "grimgoon"
+      },
+      "creation_time": "2019-02-10T11:49:27.460Z",
+      "id": "5",
+      "references": [],
+      "title": "Error Handling"
+    },
+    {
+      "assignedTo": {
+        "name": "grimgoon"
+      },
+      "creation_time": "2019-02-10T11:50:19.890Z",
+      "id": "6",
+      "references": [],
+      "title": "Complete Footer"
+    }
+  ]
+}
