@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import {Route} from 'react-router-dom';
 import axios from  '../Firebase/Database/Database';
 
-// import FirebaseStorage from '../Firebase/Storage';
-// import Firebase from 'firebase/app';
-// import 'firebase/storage';
-
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import GalleryImages from './GalleryImages/GalleryImages'; 

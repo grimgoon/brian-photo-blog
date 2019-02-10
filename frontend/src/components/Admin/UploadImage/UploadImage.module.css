@@ -1,0 +1,18 @@
+.uploadImageButton {
+    display: inline-block;
+}
+
+.uploadImageButton label {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.uploadImageButton label img {
+    width: 100px;
+    height: 100px;
+}
+
+.uploadImageButton input {
+    display: none;
+}

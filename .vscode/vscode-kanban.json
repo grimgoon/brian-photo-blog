@@ -5,6 +5,19 @@
       "assignedTo": {
         "name": "grimgoon"
       },
+      "creation_time": "2019-02-10T11:47:02.103Z",
+      "details": {
+        "content": "- Auth System\n- Migrate upload button\n- Drag and Drop images system\n- Create, Delete, Modify Categories\n- Delete Images\n",
+        "mime": "text/markdown"
+      },
+      "id": "3",
+      "references": [],
+      "title": "Admin Panel"
+    },
+    {
+      "assignedTo": {
+        "name": "grimgoon"
+      },
       "creation_time": "2019-02-10T11:47:10.859Z",
       "id": "4",
       "references": [],
@@ -17,14 +30,10 @@
       "assignedTo": {
         "name": "grimgoon"
       },
-      "creation_time": "2019-02-10T11:47:02.103Z",
-      "details": {
-        "content": "- Auth System\n- Migrate upload button\n- Drag and Drop images system\n- Create, Delete, Modify Categories\n- Delete Images\n",
-        "mime": "text/markdown"
-      },
-      "id": "3",
+      "creation_time": "2019-02-10T11:50:19.890Z",
+      "id": "6",
       "references": [],
-      "title": "Admin Panel"
+      "title": "Complete Footer"
     },
     {
       "assignedTo": {
@@ -61,10 +70,10 @@
       "assignedTo": {
         "name": "grimgoon"
       },
-      "creation_time": "2019-02-10T11:50:19.890Z",
-      "id": "6",
+      "creation_time": "2019-02-10T12:01:37.773Z",
+      "id": "7",
       "references": [],
-      "title": "Complete Footer"
+      "title": "Learn MERN Stack & Migrate Requests etc."
     }
   ]
 }
