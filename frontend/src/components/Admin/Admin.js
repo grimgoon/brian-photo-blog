@@ -10,10 +10,13 @@ class Admin extends Component {
 
     state = {
         uploadingImage: false,
+        imageList: null
     }
 
     componentDidMount() {
+        Firebase.initializeApp(FirebaseConfig);
 
+        this.getImageList();
     }
 
     uploadImage = (event) => {
@@ -22,9 +25,8 @@ class Admin extends Component {
 
         const folderReference = 'photographs/';
 
-        // Check if the files have right fileTypes etc.
+        //TODO: Check if the files have right fileTypes etc.
 
-        Firebase.initializeApp(FirebaseConfig);
         const storageRef  = Firebase.storage().ref();
         const database = Firebase.database();
         
@@ -46,27 +48,51 @@ class Admin extends Component {
                 let imageName = fileData[0];
                 let fileType = fileData[1];
 
+                //TODO: Add category field to the data we're writing
+
                 database.ref(folderReference).child(imageName).set({
                     fileType : fileType,
                     date : Date.now(),
-                })
+                });
 
                 //TODO: Learn to check if writing to Firebase fails. If so - Delete the image from storage (?)
-
+      
+                // TODO - figure out why Async + State aren't buddies
                 if(files.length === i+1) {
                     this.setState({uploadingImage : false})
                 }
-              }).catch((error) => {
-                  // Error to upload file 
-              });
+
+            }).catch((error) => {
+                // Error to upload file 
+            });
+        })
+    }
+
+    getImageList = () => {
+
+        const database = Firebase.database();
+        database.ref('photographs').on('value', (snapshot) => {
+            let images = [];
+            for(let key in  snapshot.val) {
+                images.push({
+                    id: key,
+                    ...snapshot.val[key]
+                });
+            }
+            this.setState({imageList : images});
         })
     }
 
     render() {
+
+        console.log(this.state);
+
+        let uploadingStatus = this.state.uploadingImage.toString()
+
         return (
             <div>
                 <UploadImage onChange={this.uploadImage}/>
-                Uploading: {this.state.uploadingImage.toString()}
+                Uploading: {uploadingStatus}
             </div>
         )
     }

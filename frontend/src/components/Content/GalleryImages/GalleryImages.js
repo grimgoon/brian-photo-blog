@@ -9,9 +9,6 @@ const GalleryImages = (props) => {
 
     let images;
 
-    let group1 = [];
-    let group2 = [];
-
     if(!props.photoList && !props.error) {
         props.getList();
     }
