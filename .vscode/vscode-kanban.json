@@ -1,5 +1,15 @@
 {
-  "done": [],
+  "done": [
+    {
+      "assignedTo": {
+        "name": "grimgoon"
+      },
+      "creation_time": "2019-02-11T17:20:33.526Z",
+      "id": "8",
+      "references": [],
+      "title": "Scale Images to screen"
+    }
+  ],
   "in-progress": [
     {
       "assignedTo": {
@@ -34,6 +44,19 @@
       "id": "6",
       "references": [],
       "title": "Complete Footer"
+    },
+    {
+      "assignedTo": {
+        "name": "grimgoon"
+      },
+      "creation_time": "2019-02-13T15:36:14.080Z",
+      "description": {
+        "content": "Group Images by \"groups\" to put them adjecent to each other.\nE.g. Malta Group, Paris Group, Starred Group\n",
+        "mime": "text/markdown"
+      },
+      "id": "9",
+      "references": [],
+      "title": "Create \"Groups\" Feature"
     },
     {
       "assignedTo": {

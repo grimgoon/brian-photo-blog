@@ -126,13 +126,3 @@ class Content extends Component {
 }
 
 export default Content;
-
-// Create Spinner
-//Get list of all photographs from Database
-// Get list of exisiting categories
-// Define which route you're on
-// If you're on an exisiting route, keep going. Otherwise Display 404-page
-// Apply filter to list of which photographs should be be generated
-// Generate GalleryImage image components
-// Display images
-// Hide Spinner 
