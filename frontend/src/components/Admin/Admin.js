@@ -88,8 +88,6 @@ class Admin extends Component {
 
             updateGroupArray.forEach((file, i) => {
 
-                console.log(file.id);
-
                 database.ref(folderReference + file.id).update({
                     order : newImageLength+i,
                 });    
@@ -100,6 +98,8 @@ class Admin extends Component {
     getImageList = () => {
 
         const database = Firebase.database();
+
+        // TODO: Error Handling
         database.ref('photographs').on('value',(snapshot) => {
             let images = [];
             let values = snapshot.val();
@@ -124,10 +124,13 @@ class Admin extends Component {
         console.log(this.state.imageList);
 
         return (
-            <div>
+            <div 
+                style={{
+                    width : "86%",
+                    margin: "0 auto"
+                }}
+            >
                 <UploadImage onChange={this.uploadImage}/>
-                Uploading: {uploadingStatus}
-                <p>ImageListSet : {this.state.imageList === null ? "Nope" : this.state.imageList.length}</p>
                 <ListImages images={this.state.imageList} />
             </div>
         )

@@ -1,16 +1,23 @@
 .uploadImageButton {
     display: inline-block;
+    background-color: #5eadc5;
+    border-radius:
 }
 
 .uploadImageButton label {
     display: flex;
-    flex-direction: column;
     cursor: pointer;
+    align-items: center;
+    padding: 8px;
 }
 
 .uploadImageButton label img {
-    width: 100px;
-    height: 100px;
+    width: 40px;
+    height: 40px;
+}
+
+.uploadImageButton label span {
+    margin-left: 4px;
 }
 
 .uploadImageButton input {
