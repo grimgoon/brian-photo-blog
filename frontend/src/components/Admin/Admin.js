@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
+
 import UploadImage from './UploadImage/UploadImage';
+import ListImages from './ListImages/ListImages';
 
 import Firebase from 'firebase/app';
 import 'firebase/storage';
@@ -10,20 +12,19 @@ class Admin extends Component {
 
     state = {
         uploadingImage: false,
-        imageList: null
+        imageList: null,
+        folderReference : 'photographs/'
     }
 
     componentDidMount() {
         Firebase.initializeApp(FirebaseConfig);
-
         this.getImageList();
     }
 
     uploadImage = (event) => {
         const files = Array.from(event.target.files);
-        console.log(files);
 
-        const folderReference = 'photographs/';
+        const folderReference = this.state.folderReference;
 
         //TODO: Check if the files have right fileTypes etc.
 
@@ -31,6 +32,8 @@ class Admin extends Component {
         const database = Firebase.database();
         
         this.setState({uploadingImage : true})
+
+        this.updateOrderGroup(files.length);
 
         files.forEach((file, i) => {
 
@@ -41,18 +44,19 @@ class Admin extends Component {
 
             imageReference.put(file).then(function(snapshot) {
 
-                console.log(file);
-
                 let fileData = file.name.split('.');
 
                 let imageName = fileData[0];
                 let fileType = fileData[1];
 
-                //TODO: Add category field to the data we're writing
-
                 database.ref(folderReference).child(imageName).set({
                     fileType : fileType,
                     date : Date.now(),
+                    categories : {
+                        all : "all"
+                    },
+                    group : "unset",
+                    order: i
                 });
 
                 //TODO: Learn to check if writing to Firebase fails. If so - Delete the image from storage (?)
@@ -68,31 +72,63 @@ class Admin extends Component {
         })
     }
 
+    updateOrderGroup = (newImageLength,groupName = "unset") => {
+
+        console.log("Tjena!");
+        console.log(this.state.imageList,this.state.imageList.length);
+
+        if(this.state.imageList && this.state.imageList.length >= 1) {
+
+            const database = Firebase.database();
+            const folderReference = this.state.folderReference;
+
+            console.log("updateOrderNewImages : Success",this.state.imageList);
+
+            let updateGroupArray = this.state.imageList.filter(image => image.group = groupName);
+
+            updateGroupArray.forEach((file, i) => {
+
+                console.log(file.id);
+
+                database.ref(folderReference + file.id).update({
+                    order : newImageLength+i,
+                });    
+            });
+        }
+    }
+
     getImageList = () => {
 
         const database = Firebase.database();
-        database.ref('photographs').on('value', (snapshot) => {
+        database.ref('photographs').on('value',(snapshot) => {
             let images = [];
-            for(let key in  snapshot.val) {
+            let values = snapshot.val();
+
+            for(let key in  values) {
                 images.push({
                     id: key,
-                    ...snapshot.val[key]
+                    ...values[key]
                 });
             }
+
+            images = images.sort((a, b) => (a.order) > b.order ? 1 : -1);
+
             this.setState({imageList : images});
         })
     }
 
     render() {
 
-        console.log(this.state);
-
         let uploadingStatus = this.state.uploadingImage.toString()
+
+        console.log(this.state.imageList);
 
         return (
             <div>
                 <UploadImage onChange={this.uploadImage}/>
                 Uploading: {uploadingStatus}
+                <p>ImageListSet : {this.state.imageList === null ? "Nope" : this.state.imageList.length}</p>
+                <ListImages images={this.state.imageList} />
             </div>
         )
     }
