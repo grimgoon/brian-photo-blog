@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import styles from './Admin.module.css';
+import Modal from 'react-responsive-modal';
 
 import Button from './Button/Button';
 import ButtonSpecial from './Button/ButtonSpecial';
@@ -16,12 +17,17 @@ class Admin extends Component {
         uploadingImage: false,
         imageList: null,
         folderReference : 'photographs/',
-        checkboxList : {}
+        checkedItemList : [],
+        modalOpen : false,
     }
 
     componentDidMount() {
         Firebase.initializeApp(FirebaseConfig);
         this.getImageList();
+    }
+
+    componentDidUpdate() {
+
     }
 
     uploadImage = (event) => {
@@ -121,37 +127,82 @@ class Admin extends Component {
     }
 
     checkboxHandler = (event) => {
-        if(event.target.checked);
+
+        const imageId = event.target.id;
+        let checkedItemList = [...this.state.checkedItemList];
+    
+        if(event.target.checked) {
+            checkedItemList.push(imageId);
+        }
+        else {
+            var index = checkedItemList.indexOf(imageId);
+            if(index !== -1) {
+                checkedItemList.splice(index,1); 
+            }
+        }
+
+        this.setState({checkedItemList : checkedItemList});
+
     }
+
+
+    // TODO: Complete
+    deleteImage = () => {
+        let checkedItemList = [...this.state.checkedItemList];
+
+        let test = checkedItemList[0];
+
+        //firebase.database().ref().update(null);
+
+        // var updatePhoto = {};
+        // updatePhoto[`/photos/${photoKey}`] = { likes: 1 }
+        // updatePhoto[`/userPhotos/${userId}/${photoKey}`] = { likes: 1 }
+    }
+
+    onOpenModal = () => {
+        this.setState({ modalOpen: true });
+      };
+    
+      onCloseModal = () => {
+        this.setState({ modalOpen: false });
+      };
 
     render() {
 
+        let modalState = this.state.modalOpen;
+
+        //TODO: Fix so buttons that relies on a checked items are disabled when deemed right.
+        // TODO: Complete Category Settings and Edit Category
         return (
-            <div className={styles.content}>
-                <div className={styles.header}>
-                <ButtonSpecial
-                    text="Upload Image(s)"
-                    type="file"
-                    imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2FuploadImageButton_light.png?alt=media&token=f868e33f-5bee-42ee-aaa4-0d279f293113"} 
-                    buttonHandler={this.uploadImage}/>
-                <Button
-                    text="Category Settings"
-                    type="button"
-                    imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fedit_categories.png?alt=media&token=5ae3be3b-c84f-4abd-bb21-0b1133c6ed64"} 
-                    buttonHandler={() => (console.log("HAH"))}/>
-                <Button
-                    text="Edit Category"
-                    type="button"
-                    imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fedit_categories.png?alt=media&token=5ae3be3b-c84f-4abd-bb21-0b1133c6ed64"} 
-                    buttonHandler={() => (console.log("HAH"))}/>
+            <>
+                <div className={styles.content}>
+                    <div className={styles.header}>
+                    <ButtonSpecial
+                        text="Upload Image(s)"
+                        type="file"
+                        imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2FuploadImageButton_light.png?alt=media&token=f868e33f-5bee-42ee-aaa4-0d279f293113"} 
+                        buttonHandler={this.uploadImage}/>
                     <Button
-                    text="Delete Image(s)"
-                    type="button"
-                    imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fedit_categories.png?alt=media&token=5ae3be3b-c84f-4abd-bb21-0b1133c6ed64"} 
-                    buttonHandler={() => (console.log("HAH"))}/>
+                        text="Category Settings"
+                        type="button"
+                        imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fedit_categories.png?alt=media&token=5ae3be3b-c84f-4abd-bb21-0b1133c6ed64"} 
+                        buttonHandler={() => (console.log("HAH"))}/>
+                    <Button
+                        text="Edit Category"
+                        type="button"
+                        imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fedit_category.png?alt=media&token=104aca03-159a-4def-8acc-9b3fbe65bff3"} 
+                        buttonHandler={() => (console.log("HAH"))}/>
+                    <Button
+                        text="Delete Image(s)"
+                        type="button"
+                        imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fdelete_image.png?alt=media&token=111cebaa-7814-49c9-a2fb-050082ce04ea"} 
+                        buttonHandler={this.deleteImage}/>
+                    </div>
+                    <ListImages images={this.state.imageList} checkboxHandler={this.checkboxHandler} />
                 </div>
-                <ListImages images={this.state.imageList} checkboxHandler={this.checkboxHandler} />
-            </div>
+                <Modal open={modalState} onClose={this.onCloseModal}></Modal>
+
+            </>
         )
     }
 }

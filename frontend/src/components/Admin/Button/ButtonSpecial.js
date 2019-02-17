@@ -9,7 +9,7 @@ const ButtonSpecial = (props) => {
                 <img alt="Button" src={props.imgSrc}/>
                 <span>{props.text}</span>
             </label>
-            <input type='file' id='input' onChange={props.buttonHandler} />
+            <input type='file' id='input' onChange={props.buttonHandler} multiple />
         </div>
     )
 }
