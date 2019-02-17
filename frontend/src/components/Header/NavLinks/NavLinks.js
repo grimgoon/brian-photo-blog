@@ -32,6 +32,8 @@ class NavLinks extends Component {
         
     }
 
+    //TODO: Create dropdown for categories if the amount of categories go over X amount 
+
     render () {
 
         let desktopLinks = this.state.categories.map((mapCategory) => (<NavLink key={mapCategory.id} exact className={styles.link} activeClassName={styles.active} to={"/category/" + mapCategory.id}>{mapCategory.value}</NavLink>));

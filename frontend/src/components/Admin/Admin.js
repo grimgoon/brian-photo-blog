@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
+import styles from './Admin.module.css';
 
-import UploadImage from './UploadImage/UploadImage';
+import Button from './Button/Button';
+import ButtonSpecial from './Button/ButtonSpecial';
 import ListImages from './ListImages/ListImages';
 
 import Firebase from 'firebase/app';
@@ -13,7 +15,8 @@ class Admin extends Component {
     state = {
         uploadingImage: false,
         imageList: null,
-        folderReference : 'photographs/'
+        folderReference : 'photographs/',
+        checkboxList : {}
     }
 
     componentDidMount() {
@@ -53,7 +56,7 @@ class Admin extends Component {
                     fileType : fileType,
                     date : Date.now(),
                     categories : {
-                        all : "all"
+                        all : "All"
                     },
                     group : "unset",
                     order: i
@@ -117,21 +120,37 @@ class Admin extends Component {
         })
     }
 
+    checkboxHandler = (event) => {
+        if(event.target.checked);
+    }
+
     render() {
 
-        let uploadingStatus = this.state.uploadingImage.toString()
-
-        console.log(this.state.imageList);
-
         return (
-            <div 
-                style={{
-                    width : "86%",
-                    margin: "0 auto"
-                }}
-            >
-                <UploadImage onChange={this.uploadImage}/>
-                <ListImages images={this.state.imageList} />
+            <div className={styles.content}>
+                <div className={styles.header}>
+                <ButtonSpecial
+                    text="Upload Image(s)"
+                    type="file"
+                    imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2FuploadImageButton_light.png?alt=media&token=f868e33f-5bee-42ee-aaa4-0d279f293113"} 
+                    buttonHandler={this.uploadImage}/>
+                <Button
+                    text="Category Settings"
+                    type="button"
+                    imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fedit_categories.png?alt=media&token=5ae3be3b-c84f-4abd-bb21-0b1133c6ed64"} 
+                    buttonHandler={() => (console.log("HAH"))}/>
+                <Button
+                    text="Edit Category"
+                    type="button"
+                    imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fedit_categories.png?alt=media&token=5ae3be3b-c84f-4abd-bb21-0b1133c6ed64"} 
+                    buttonHandler={() => (console.log("HAH"))}/>
+                    <Button
+                    text="Delete Image(s)"
+                    type="button"
+                    imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fedit_categories.png?alt=media&token=5ae3be3b-c84f-4abd-bb21-0b1133c6ed64"} 
+                    buttonHandler={() => (console.log("HAH"))}/>
+                </div>
+                <ListImages images={this.state.imageList} checkboxHandler={this.checkboxHandler} />
             </div>
         )
     }
