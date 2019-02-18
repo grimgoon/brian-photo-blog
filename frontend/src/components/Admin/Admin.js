@@ -55,8 +55,16 @@ class Admin extends Component {
 
                 let fileData = file.name.split('.');
 
-                let imageName = fileData[0];
-                let fileType = fileData[1];
+                //TODO: Keep working on fix so people can submit images that uses a "." in the name.
+
+                let imageName = fileData.slice(0,fileData.length - 1).join('.');
+                let fileType = fileData[fileData.length -1];
+
+                console.log(imageName);
+
+                console.log(fileData.length -1);
+                console.log(fileData);
+                console.log(fileType)
 
                 database.ref(folderReference).child(imageName).set({
                     fileType : fileType,
