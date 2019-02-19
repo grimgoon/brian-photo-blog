@@ -19,6 +19,7 @@ class Admin extends Component {
         folderReference : 'photographs/',
         checkedItemList : [],
         modalOpen : false,
+        errorMessage : false,
     }
 
     componentDidMount() {
@@ -35,37 +36,37 @@ class Admin extends Component {
 
         const folderReference = this.state.folderReference;
 
-        //TODO: Check if the files have right fileTypes etc.
-
         const storageRef  = Firebase.storage().ref();
         const database = Firebase.database();
         
         this.setState({uploadingImage : true})
 
-        this.updateOrderGroup(files.length);
+        let updateOrderCounter = 0;
 
         files.forEach((file, i) => {
+
+            console.log(file);
 
             let fileReference = folderReference + file.name;
             let imageReference = storageRef.child(fileReference);
 
-            //TODO: Check if the image already exists in the list to not overwrite!
+            let fileData = file.name.split('.');
+            let imageName = fileData[0];
+            let fileType = fileData[fileData.length -1];
+
+            if(fileData.length > 2) {
+                this.setState({errorMessage : 'Image Name can\'t contain "."'})
+                return;
+            }
+            else if (file.type !== "image/jpeg" && file.type !== "image/png") {
+                this.setState({errorMessage : 'Image needs to be a JPG or PNG'})
+                return;        
+            }
+            else {
+                updateOrderCounter++;    
+            }
 
             imageReference.put(file).then(function(snapshot) {
-
-                let fileData = file.name.split('.');
-
-                //TODO: Keep working on fix so people can submit images that uses a "." in the name.
-
-                let imageName = fileData.slice(0,fileData.length - 1).join('.');
-                let fileType = fileData[fileData.length -1];
-
-                console.log(imageName);
-
-                console.log(fileData.length -1);
-                console.log(fileData);
-                console.log(fileType)
-
                 database.ref(folderReference).child(imageName).set({
                     fileType : fileType,
                     date : Date.now(),
@@ -87,19 +88,16 @@ class Admin extends Component {
                 // Error to upload file 
             });
         })
+
+        this.updateOrderGroup(updateOrderCounter);
     }
 
     updateOrderGroup = (newImageLength,groupName = "unset") => {
-
-        console.log("Tjena!");
-        console.log(this.state.imageList,this.state.imageList.length);
 
         if(this.state.imageList && this.state.imageList.length >= 1) {
 
             const database = Firebase.database();
             const folderReference = this.state.folderReference;
-
-            console.log("updateOrderNewImages : Success",this.state.imageList);
 
             let updateGroupArray = this.state.imageList.filter(image => image.group = groupName);
 
@@ -153,18 +151,24 @@ class Admin extends Component {
 
     }
 
-
     // TODO: Complete
     deleteImage = () => {
+
         let checkedItemList = [...this.state.checkedItemList];
 
-        let test = checkedItemList[0];
+        // Should I update state of the checkedItemList after all the items have been removed? 
+        //Or should I do it one by one?
 
-        //firebase.database().ref().update(null);
+        // Should I also remove the file from the storage or is that fine to keep?
 
-        // var updatePhoto = {};
-        // updatePhoto[`/photos/${photoKey}`] = { likes: 1 }
-        // updatePhoto[`/userPhotos/${userId}/${photoKey}`] = { likes: 1 }
+        // Error Handling ??
+
+        checkedItemList.forEach((file,i) => {   
+            Firebase.database().ref('photographs').child(file).remove();
+        });
+
+        this.setState({checkedItemList : []});
+
     }
 
     onOpenModal = () => {
@@ -179,8 +183,12 @@ class Admin extends Component {
 
         let modalState = this.state.modalOpen;
 
+        // TODO: Fix Error Message to display properly 
+        let errorMessage = this.state.errorMessage;
+        
         //TODO: Fix so buttons that relies on a checked items are disabled when deemed right.
         // TODO: Complete Category Settings and Edit Category
+
         return (
             <>
                 <div className={styles.content}>
@@ -206,6 +214,7 @@ class Admin extends Component {
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fdelete_image.png?alt=media&token=111cebaa-7814-49c9-a2fb-050082ce04ea"} 
                         buttonHandler={this.deleteImage}/>
                     </div>
+                    {!errorMessage ? "No Error" : errorMessage}
                     <ListImages images={this.state.imageList} checkboxHandler={this.checkboxHandler} />
                 </div>
                 <Modal open={modalState} onClose={this.onCloseModal}></Modal>
