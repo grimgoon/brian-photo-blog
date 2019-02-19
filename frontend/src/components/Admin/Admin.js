@@ -19,6 +19,7 @@ class Admin extends Component {
         folderReference : 'photographs/',
         checkedItemList : [],
         modalOpen : false,
+        modalContent : null,
         errorMessage : false,
     }
 
@@ -151,7 +152,6 @@ class Admin extends Component {
 
     }
 
-    // TODO: Complete
     deleteImage = () => {
 
         let checkedItemList = [...this.state.checkedItemList];
@@ -166,9 +166,20 @@ class Admin extends Component {
         checkedItemList.forEach((file,i) => {   
             Firebase.database().ref('photographs').child(file).remove();
         });
+    }
 
-        this.setState({checkedItemList : []});
+    deleteImageModal = () => {
 
+        let modalContent = 
+            <div>
+                <p>Are you sure you want to delete these images?</p>
+                <Button 
+                    buttonHandler={() => {this.deleteImage(); this.onCloseModal()}}
+                    text="Delete it!"
+                    imgSrc="https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fdelete_image.png?alt=media&token=111cebaa-7814-49c9-a2fb-050082ce04ea" 
+                />
+            </div>;
+        this.setState({modalOpen: true, modalContent : modalContent})
     }
 
     onOpenModal = () => {
@@ -182,6 +193,7 @@ class Admin extends Component {
     render() {
 
         let modalState = this.state.modalOpen;
+        let modalContent = this.state.modalContent
 
         // TODO: Fix Error Message to display properly 
         let errorMessage = this.state.errorMessage;
@@ -195,7 +207,6 @@ class Admin extends Component {
                     <div className={styles.header}>
                     <ButtonSpecial
                         text="Upload Image(s)"
-                        type="file"
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2FuploadImageButton_light.png?alt=media&token=f868e33f-5bee-42ee-aaa4-0d279f293113"} 
                         buttonHandler={this.uploadImage}/>
                     <Button
@@ -204,20 +215,20 @@ class Admin extends Component {
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fedit_categories.png?alt=media&token=5ae3be3b-c84f-4abd-bb21-0b1133c6ed64"} 
                         buttonHandler={() => (console.log("HAH"))}/>
                     <Button
+                        disabled
                         text="Edit Category"
-                        type="button"
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fedit_category.png?alt=media&token=104aca03-159a-4def-8acc-9b3fbe65bff3"} 
                         buttonHandler={() => (console.log("HAH"))}/>
                     <Button
+                        disabled
                         text="Delete Image(s)"
-                        type="button"
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fdelete_image.png?alt=media&token=111cebaa-7814-49c9-a2fb-050082ce04ea"} 
-                        buttonHandler={this.deleteImage}/>
+                        buttonHandler={this.deleteImageModal}/>
                     </div>
                     {!errorMessage ? "No Error" : errorMessage}
                     <ListImages images={this.state.imageList} checkboxHandler={this.checkboxHandler} />
                 </div>
-                <Modal open={modalState} onClose={this.onCloseModal}></Modal>
+                <Modal open={modalState} onClose={this.onCloseModal}>{modalContent}</Modal>
 
             </>
         )
