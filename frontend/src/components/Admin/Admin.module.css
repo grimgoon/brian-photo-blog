@@ -8,3 +8,19 @@
     display: flex;
     flex-wrap: wrap;
 }
+
+.modalCloseButton {
+    cursor: pointer;
+}
+
+.modalContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 40px;
+}
+
+.modalCloseButton:focus {
+    outline:none;
+}

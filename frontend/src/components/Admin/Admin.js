@@ -2,8 +2,11 @@ import React, {Component} from 'react';
 import styles from './Admin.module.css';
 import Modal from 'react-responsive-modal';
 
-import Button from './Button/Button';
-import ButtonSpecial from './Button/ButtonSpecial';
+
+import Overlay from '../UI/Overlay/Overlay';
+
+import Button from '../UI/Button/Button';
+import ButtonSpecial from '../UI/Button/ButtonSpecial';
 import ListImages from './ListImages/ListImages';
 
 import Firebase from 'firebase/app';
@@ -21,6 +24,7 @@ class Admin extends Component {
         modalOpen : false,
         modalContent : null,
         errorMessage : false,
+        disableButtons: false
     }
 
     componentDidMount() {
@@ -40,7 +44,7 @@ class Admin extends Component {
         const storageRef  = Firebase.storage().ref();
         const database = Firebase.database();
         
-        this.setState({uploadingImage : true})
+        this.setState({disableButtons : true})
 
         let updateOrderCounter = 0;
 
@@ -67,7 +71,7 @@ class Admin extends Component {
                 updateOrderCounter++;    
             }
 
-            imageReference.put(file).then(function(snapshot) {
+            imageReference.put(file).then((snapshot) => {
                 database.ref(folderReference).child(imageName).set({
                     fileType : fileType,
                     date : Date.now(),
@@ -76,14 +80,13 @@ class Admin extends Component {
                     },
                     group : "unset",
                     order: i
+                }).then(() => {
+                    if(files.length === i+1) {
+                        this.setState({disableButtons : false});
+                    }
+                }).error((error) => {
+                    // Error to add file to database
                 });
-
-                //TODO: Learn to check if writing to Firebase fails. If so - Delete the image from storage (?)
-      
-                // TODO - figure out why Async + State aren't buddies
-                if(files.length === i+1) {
-                    this.setState({uploadingImage : false})
-                }
 
             }).catch((error) => {
                 // Error to upload file 
@@ -168,17 +171,19 @@ class Admin extends Component {
         });
     }
 
+    // TODO: Style Modal
+
     deleteImageModal = () => {
 
         let modalContent = 
-            <div>
+            <>
                 <p>Are you sure you want to delete these images?</p>
                 <Button 
                     buttonHandler={() => {this.deleteImage(); this.onCloseModal()}}
                     text="Delete it!"
                     imgSrc="https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fdelete_image.png?alt=media&token=111cebaa-7814-49c9-a2fb-050082ce04ea" 
                 />
-            </div>;
+            </>;
         this.setState({modalOpen: true, modalContent : modalContent})
     }
 
@@ -190,6 +195,23 @@ class Admin extends Component {
         this.setState({ modalOpen: false });
       };
 
+      buttonDisabled = (buttonType) => {
+
+        let isDisabled = false;
+
+        if(this.state.disableButtons) {
+            isDisabled = true;    
+        }
+        else if (buttonType === "listItem" && this.state.checkedItemList.length === 0) {
+            isDisabled = true;
+        }
+
+        return isDisabled;
+
+
+      }
+
+
     render() {
 
         let modalState = this.state.modalOpen;
@@ -198,29 +220,30 @@ class Admin extends Component {
         // TODO: Fix Error Message to display properly 
         let errorMessage = this.state.errorMessage;
         
-        //TODO: Fix so buttons that relies on a checked items are disabled when deemed right.
         // TODO: Complete Category Settings and Edit Category
 
         return (
-            <>
+            <> 
                 <div className={styles.content}>
                     <div className={styles.header}>
                     <ButtonSpecial
+                        disabled={this.buttonDisabled()}
                         text="Upload Image(s)"
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2FuploadImageButton_light.png?alt=media&token=f868e33f-5bee-42ee-aaa4-0d279f293113"} 
                         buttonHandler={this.uploadImage}/>
                     <Button
+                        disabled={this.buttonDisabled()}
                         text="Category Settings"
                         type="button"
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fedit_categories.png?alt=media&token=5ae3be3b-c84f-4abd-bb21-0b1133c6ed64"} 
                         buttonHandler={() => (console.log("HAH"))}/>
                     <Button
-                        disabled
+                        disabled={this.buttonDisabled("listItem")}
                         text="Edit Category"
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fedit_category.png?alt=media&token=104aca03-159a-4def-8acc-9b3fbe65bff3"} 
                         buttonHandler={() => (console.log("HAH"))}/>
                     <Button
-                        disabled
+                        disabled={this.buttonDisabled("listItem")}
                         text="Delete Image(s)"
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fdelete_image.png?alt=media&token=111cebaa-7814-49c9-a2fb-050082ce04ea"} 
                         buttonHandler={this.deleteImageModal}/>
@@ -228,7 +251,16 @@ class Admin extends Component {
                     {!errorMessage ? "No Error" : errorMessage}
                     <ListImages images={this.state.imageList} checkboxHandler={this.checkboxHandler} />
                 </div>
-                <Modal open={modalState} onClose={this.onCloseModal}>{modalContent}</Modal>
+
+                <Modal 
+                    classNames={{
+                        closeButton : styles.modalCloseButton,
+                        modal : styles.modalContent
+                    }}
+                    open={modalState} 
+                    onClose={this.onCloseModal}>
+                    {modalContent}
+                </Modal>
 
             </>
         )

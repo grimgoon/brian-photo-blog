@@ -1,6 +1,5 @@
 .Button {
     display: inline-block;
-    background-color: #5eadc5;
     border-radius: 4px;
     margin: 20px 20px 20px 0px;
     color: #fdfdfd;
@@ -11,10 +10,25 @@
     align-items: center;
     cursor: pointer;
     justify-content: center;
+    border: none;
+    overflow: visible;
 }
 
-.Button:hover {
+
+.Button:focus {
+    outline: none;
+}
+
+.ButtonEnabled {
+    background-color: #5eadc5;
+}
+
+.ButtonEnabled:hover {
     transform: translateY(4px);
+}
+
+.ButtonDisabled {
+    cursor: default;
 }
 
 .Button > label {
