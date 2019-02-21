@@ -6,6 +6,7 @@ const GalleryImage = (props) => {
         <img 
             src={props.baseURL + props.id + "." + props.fileType + props.queryString}
             alt={props.id} />
+
     )
 }
 

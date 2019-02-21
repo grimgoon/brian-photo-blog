@@ -26,6 +26,7 @@ const GalleryImages = (props) => {
         images = props.photoList.filter(photoFilter).map((photo) => (<GalleryImage key={photo.id} baseURL={baseImageURL} queryString={queryString} id={photo.id} fileType={photo.fileType} />));
         
         // TODO: Implement support for "Groups"
+        // TODO: Figure out how to use LazyLoading when using the column CSS
 
     }
 
