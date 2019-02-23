@@ -17,7 +17,7 @@ import FirebaseConfig from '../Firebase/Config/Config';
 class Admin extends Component {
 
     state = {
-        uploadingImage: false,
+        uploadingImages: [],
         imageList: null,
         folderReference : 'photographs/',
         checkedItemList : [],
@@ -43,8 +43,13 @@ class Admin extends Component {
 
         const storageRef  = Firebase.storage().ref();
         const database = Firebase.database();
+
+
+        let uploadingImagesArray = files.map((file) => (file.name));
+
+        console.log(uploadingImagesArray);
         
-        this.setState({disableButtons : true})
+        this.setState({disableButtons : true, uploadingImages : uploadingImagesArray})
 
         let updateOrderCounter = 0;
 
@@ -81,6 +86,18 @@ class Admin extends Component {
                     group : "unset",
                     order: i
                 }).then(() => {
+
+                    // Move this to a function, and add the function call when a image fails to upload as well.
+
+                    let unlistUploadedImagePosition = this.state.uploadingImages.indexOf(file.name);
+                    let unlistUploadedImage = [...this.state.uploadingImages];
+                    unlistUploadedImage.splice(unlistUploadedImagePosition,1);
+
+                    console.log(unlistUploadedImagePosition);
+                    console.log(unlistUploadedImage);
+
+                    this.setState({uploadingImages : unlistUploadedImage});
+
                     if(files.length === i+1) {
                         this.setState({disableButtons : false});
                     }
@@ -220,6 +237,8 @@ class Admin extends Component {
         // TODO: Fix Error Message to display properly 
         let errorMessage = this.state.errorMessage;
         
+        let uploadingImages = this.state.uploadingImages.length > 0 ? this.state.uploadingImages.map((imageUpload => (<div>Uploading File: {imageUpload}</div>))) : <div>Nej</div>
+
         // TODO: Complete Category Settings and Edit Category
 
         return (
@@ -248,6 +267,7 @@ class Admin extends Component {
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fdelete_image.png?alt=media&token=111cebaa-7814-49c9-a2fb-050082ce04ea"} 
                         buttonHandler={this.deleteImageModal}/>
                     </div>
+                    {uploadingImages}
                     {!errorMessage ? "No Error" : errorMessage}
                     <ListImages images={this.state.imageList} checkboxHandler={this.checkboxHandler} />
                 </div>
