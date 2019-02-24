@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import styles from './Admin.module.css';
 import Modal from 'react-responsive-modal';
 
-
 import Overlay from '../UI/Overlay/Overlay';
 
 import Button from '../UI/Button/Button';
 import ButtonSpecial from '../UI/Button/ButtonSpecial';
 import ListImages from './ListImages/ListImages';
+import ImagesNotification from './UploadingImagesStatusNotification/UploadingImagesStatusNotification';
 
 import Firebase from 'firebase/app';
 import 'firebase/storage';
@@ -246,7 +246,7 @@ class Admin extends Component {
         console.log(this.state.uploadingImages);
 
         //TODO: Move this to its own component.
-        let uploadingImages = this.state.uploadingImages.length > 0 ? <div className={styles.uploadingImagesContainer}>{this.state.uploadingImages.map(((imageUpload,i) => (<div key={i}>Uploading File: {imageUpload}</div>)))} </div> : <div></div>
+       
 
         // TODO: Complete Category Settings and Edit Category
 
@@ -276,7 +276,7 @@ class Admin extends Component {
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fdelete_image.png?alt=media&token=111cebaa-7814-49c9-a2fb-050082ce04ea"} 
                         buttonHandler={this.deleteImageModal}/>
                     </div>
-                    {uploadingImages}
+                    <ImagesNotification uploadingImages={this.state.uploadingImages}/>
                     {!errorMessage ? "No Error" : errorMessage}
                     <ListImages images={this.state.imageList} checkboxHandler={this.checkboxHandler} />
                 </div>
