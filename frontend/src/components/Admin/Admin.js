@@ -37,6 +37,7 @@ class Admin extends Component {
     }
 
     uploadImage = (event) => {
+
         const files = Array.from(event.target.files);
 
         const folderReference = this.state.folderReference;
@@ -44,37 +45,33 @@ class Admin extends Component {
         const storageRef  = Firebase.storage().ref();
         const database = Firebase.database();
 
-
         let uploadingImagesArray = files.map((file) => (file.name));
 
-        console.log(uploadingImagesArray);
-        
         this.setState({disableButtons : true, uploadingImages : uploadingImagesArray})
 
         let updateOrderCounter = 0;
 
         files.forEach((file, i) => {
 
-            console.log(file);
-
-            let fileReference = folderReference + file.name;
-            let imageReference = storageRef.child(fileReference);
-
             let fileData = file.name.split('.');
             let imageName = fileData[0];
             let fileType = fileData[fileData.length -1];
 
             if(fileData.length > 2) {
+
                 this.setState({errorMessage : 'Image Name can\'t contain "."'})
                 return;
             }
             else if (file.type !== "image/jpeg" && file.type !== "image/png") {
-                this.setState({errorMessage : 'Image needs to be a JPG or PNG'})
+                this.setState({errorMessage : 'Image needs to be a JPG or PNG'});
                 return;        
             }
             else {
                 updateOrderCounter++;    
             }
+
+            let fileReference = folderReference + file.name;
+            let imageReference = storageRef.child(fileReference);
 
             imageReference.put(file).then((snapshot) => {
                 database.ref(folderReference).child(imageName).set({
@@ -86,17 +83,6 @@ class Admin extends Component {
                     group : "unset",
                     order: i
                 }).then(() => {
-
-                    // Move this to a function, and add the function call when a image fails to upload as well.
-
-                    let unlistUploadedImagePosition = this.state.uploadingImages.indexOf(file.name);
-                    let unlistUploadedImage = [...this.state.uploadingImages];
-                    unlistUploadedImage.splice(unlistUploadedImagePosition,1);
-
-                    console.log(unlistUploadedImagePosition);
-                    console.log(unlistUploadedImage);
-
-                    this.setState({uploadingImages : unlistUploadedImage});
 
                     if(files.length === i+1) {
                         this.setState({disableButtons : false});
@@ -111,6 +97,20 @@ class Admin extends Component {
         })
 
         this.updateOrderGroup(updateOrderCounter);
+    }
+
+    removeItemUploadingImageList = (name) => {
+
+        this.setState((prevState,props) => {
+
+            let imageList = prevState.uploadingImages
+            let index = imageList.indexOf(name);
+            imageList.splice(index,1);
+
+            return {uploadingImages : imageList}
+        });
+
+        
     }
 
     updateOrderGroup = (newImageLength,groupName = "unset") => {
@@ -172,6 +172,8 @@ class Admin extends Component {
 
     }
 
+    // TODO: Fix so when deleting an item it gets removed from the selected items list.
+
     deleteImage = () => {
 
         let checkedItemList = [...this.state.checkedItemList];
@@ -183,12 +185,17 @@ class Admin extends Component {
 
         // Error Handling ??
 
-        checkedItemList.forEach((file,i) => {   
-            Firebase.database().ref('photographs').child(file).remove();
+        checkedItemList.forEach((file,i) => {
+
+            Firebase.database().ref('photographs').child(file).remove().then(() => {
+
+                let newSelectedList =  [...this.state.checkedItemList];
+                newSelectedList.shift();
+
+                this.setState({checkedItemList : newSelectedList})
+            });
         });
     }
-
-    // TODO: Style Modal
 
     deleteImageModal = () => {
 
@@ -208,11 +215,11 @@ class Admin extends Component {
         this.setState({ modalOpen: true });
       };
     
-      onCloseModal = () => {
+    onCloseModal = () => {
         this.setState({ modalOpen: false });
-      };
+    };
 
-      buttonDisabled = (buttonType) => {
+    buttonDisabled = (buttonType) => {
 
         let isDisabled = false;
 
@@ -226,8 +233,7 @@ class Admin extends Component {
         return isDisabled;
 
 
-      }
-
+    }
 
     render() {
 
@@ -237,7 +243,10 @@ class Admin extends Component {
         // TODO: Fix Error Message to display properly 
         let errorMessage = this.state.errorMessage;
         
-        let uploadingImages = this.state.uploadingImages.length > 0 ? this.state.uploadingImages.map((imageUpload => (<div>Uploading File: {imageUpload}</div>))) : <div>Nej</div>
+        console.log(this.state.uploadingImages);
+
+        //TODO: Move this to its own component.
+        let uploadingImages = this.state.uploadingImages.length > 0 ? <div className={styles.uploadingImagesContainer}>{this.state.uploadingImages.map(((imageUpload,i) => (<div key={i}>Uploading File: {imageUpload}</div>)))} </div> : <div></div>
 
         // TODO: Complete Category Settings and Edit Category
 

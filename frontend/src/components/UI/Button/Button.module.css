@@ -32,9 +32,16 @@
 }
 
 .Button > label {
-    cursor: pointer;
     display: flex;
     align-items: center;    
+}
+
+.labelEnabled {
+    cursor: pointer;
+}
+
+.labelDisabled {
+    cursor: default;
 }
 
 .Button img {
