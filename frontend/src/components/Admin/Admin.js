@@ -17,23 +17,33 @@ import FirebaseConfig from '../Firebase/Config/Config';
 class Admin extends Component {
 
     state = {
-        uploadingImages: [],
+        uploadingImages: {},
         imageList: null,
         folderReference : 'photographs/',
         checkedItemList : [],
         modalOpen : false,
         modalContent : null,
-        errorMessage : false,
         disableButtons: false
     }
 
     componentDidMount() {
         Firebase.initializeApp(FirebaseConfig);
         this.getImageList();
+        console.log("Meep",this.state.uploadingImages)
     }
 
     componentDidUpdate() {
 
+        // Enable Buttons after uploading Images
+        if(this.state.disableButtons && this.state.uploadingImages) {
+            let enableButtons = this.state.uploadingImages.find((obj,i) => (
+                obj.status !== "uploaded" && obj.status !== "error" 
+            ));
+
+            if(!enableButtons) {
+                this.setState({disableButtons : false});
+            }
+        }
     }
 
     uploadImage = (event) => {
@@ -45,9 +55,15 @@ class Admin extends Component {
         const storageRef  = Firebase.storage().ref();
         const database = Firebase.database();
 
-        let uploadingImagesArray = files.map((file) => (file.name));
+        let uploadingImages = files.map((file,i) => {
+            return {
+                name : file.name,
+                status: "uploading",
+                errorMessage : null,
+            }    
+        });
 
-        this.setState({disableButtons : true, uploadingImages : uploadingImagesArray})
+        this.setState({disableButtons : true, uploadingImages : uploadingImages})
 
         let updateOrderCounter = 0;
 
@@ -58,12 +74,12 @@ class Admin extends Component {
             let fileType = fileData[fileData.length -1];
 
             if(fileData.length > 2) {
+                this.updateItemUploadingImageList(file.name,'error','Image Name can\'t contain "."');
 
-                this.setState({errorMessage : 'Image Name can\'t contain "."'})
                 return;
             }
             else if (file.type !== "image/jpeg" && file.type !== "image/png") {
-                this.setState({errorMessage : 'Image needs to be a JPG or PNG'});
+                this.updateItemUploadingImageList(file.name,'error','Image needs to be of file format JPG or PNG');
                 return;        
             }
             else {
@@ -84,9 +100,8 @@ class Admin extends Component {
                     order: i
                 }).then(() => {
 
-                    if(files.length === i+1) {
-                        this.setState({disableButtons : false});
-                    }
+                    this.updateItemUploadingImageList(file.name,"uploaded");
+
                 }).error((error) => {
                     // Error to add file to database
                 });
@@ -99,13 +114,28 @@ class Admin extends Component {
         this.updateOrderGroup(updateOrderCounter);
     }
 
-    removeItemUploadingImageList = (name) => {
+    updateItemUploadingImageList = (name,status,errorMessage) => {
 
         this.setState((prevState,props) => {
 
             let imageList = prevState.uploadingImages
-            let index = imageList.indexOf(name);
-            imageList.splice(index,1);
+
+            let index = imageList.findIndex((obj,i) => (
+                obj.name === name
+            ));
+
+            let objectErrorMessage = null;
+
+            if(errorMessage) {
+                objectErrorMessage = errorMessage; 
+            }
+      
+            imageList[index].status = status;
+            imageList[index].errorMessage = objectErrorMessage;
+
+            
+
+            //this.setState({uploadErrorMessage : ''})
 
             return {uploadingImages : imageList}
         });
@@ -241,9 +271,6 @@ class Admin extends Component {
         let modalContent = this.state.modalContent
 
         // TODO: Fix Error Message to display properly 
-        let errorMessage = this.state.errorMessage;
-        
-        console.log(this.state.uploadingImages);
 
         //TODO: Move this to its own component.
        
@@ -277,7 +304,7 @@ class Admin extends Component {
                         buttonHandler={this.deleteImageModal}/>
                     </div>
                     <ImagesNotification uploadingImages={this.state.uploadingImages}/>
-                    {!errorMessage ? "No Error" : errorMessage}
+                    {/* {!errorMessage ? "No Error" : errorMessage} */}
                     <ListImages images={this.state.imageList} checkboxHandler={this.checkboxHandler} />
                 </div>
 

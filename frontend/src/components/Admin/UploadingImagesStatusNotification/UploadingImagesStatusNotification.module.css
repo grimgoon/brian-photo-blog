@@ -9,11 +9,24 @@
     -webkit-transition: all 0.6s ease;
     transition: all 0.6s ease;
     padding: 20px;
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    font-size: 20px;
+    align-items: center
 }
 
-.notificationItem {
-    font-size: 20px;
-    margin: 20px 0 20px 0;
+.notificationItemFileName {
+  margin: 10px 0 10px 0; 
+}
+
+.notificationItemStatus {
+  justify-items: start;
+  margin: 10px 0 10px 20px;
+  position: relative;
+}
+
+.statusIcon {
+  transition: all 600ms ease-in;
 }
 
 .loadingSpinner {
@@ -33,6 +46,24 @@
     border-color: #5eadc5 transparent #5eadc5 transparent;
     animation: loadingSpinner 1.2s linear infinite;
   }
+
+  .successIcon {
+    margin-left: 16px;
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2FsuccessIcon.png?alt=media&token=28deb8c0-504e-4792-85d9-5335a494b050');
+  }
+
+  .errorIcon {
+    margin-left: 16px;
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2FerrorIcon.png?alt=media&token=eecfa7da-d42e-4160-87a8-fd47feeb24ad');
+  }
+
+
   @keyframes loadingSpinner {
     0% {
       transform: rotate(0deg);
