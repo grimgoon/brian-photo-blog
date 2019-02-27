@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './UploadingImagesStatusNotification.module.css';
+import Button from '../../UI/Button/Button';
 
 const UploadingImagesStatusNotification = (props) => {
 
@@ -51,6 +52,11 @@ const UploadingImagesStatusNotification = (props) => {
     return (
         <div className={styles.notificationContainer}>
             {uploadingImages}
+            <Button
+                disabled={props.buttonDisabled}
+                text="Close Notification"
+                imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fdelete_image.png?alt=media&token=111cebaa-7814-49c9-a2fb-050082ce04ea"} 
+                buttonHandler={props.closeNotification}/>
         </div>
     )
 }

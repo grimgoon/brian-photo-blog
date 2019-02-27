@@ -17,7 +17,7 @@ import FirebaseConfig from '../Firebase/Config/Config';
 class Admin extends Component {
 
     state = {
-        uploadingImages: {},
+        uploadingImages: null,
         imageList: null,
         folderReference : 'photographs/',
         checkedItemList : [],
@@ -265,15 +265,16 @@ class Admin extends Component {
 
     }
 
+    closeUploadNotification = () => {
+
+    }
+
     render() {
 
         let modalState = this.state.modalOpen;
         let modalContent = this.state.modalContent
 
         // TODO: Fix Error Message to display properly 
-
-        //TODO: Move this to its own component.
-       
 
         // TODO: Complete Category Settings and Edit Category
 
@@ -303,8 +304,7 @@ class Admin extends Component {
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fdelete_image.png?alt=media&token=111cebaa-7814-49c9-a2fb-050082ce04ea"} 
                         buttonHandler={this.deleteImageModal}/>
                     </div>
-                    <ImagesNotification uploadingImages={this.state.uploadingImages}/>
-                    {/* {!errorMessage ? "No Error" : errorMessage} */}
+                    {this.state.uploadingImages ? <ImagesNotification buttonDisabled={this.buttonDisabled()} closeNotification={() => (this.setState({uploadingImages : null}))} uploadingImages={this.state.uploadingImages}/> : null}
                     <ListImages images={this.state.imageList} checkboxHandler={this.checkboxHandler} />
                 </div>
 
