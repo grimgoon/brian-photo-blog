@@ -8,6 +8,7 @@ import Button from '../UI/Button/Button';
 import ButtonSpecial from '../UI/Button/ButtonSpecial';
 import ListImages from './ListImages/ListImages';
 import ImagesNotification from './UploadingImagesStatusNotification/UploadingImagesStatusNotification';
+import CategorySettings from './CategorySettings/CategorySettings';
 
 import Firebase from 'firebase/app';
 import 'firebase/storage';
@@ -19,6 +20,7 @@ class Admin extends Component {
     state = {
         uploadingImages: null,
         imageList: null,
+        categoryList: null,
         folderReference : 'photographs/',
         checkedItemList : [],
         modalOpen : false,
@@ -29,7 +31,9 @@ class Admin extends Component {
     componentDidMount() {
         Firebase.initializeApp(FirebaseConfig);
         this.getImageList();
-        console.log("Meep",this.state.uploadingImages)
+        this.getCategoryList();
+
+
     }
 
     componentDidUpdate() {
@@ -183,6 +187,29 @@ class Admin extends Component {
         })
     }
 
+    getCategoryList = () => {
+
+        const database = Firebase.database();
+
+        // TODO: Error Handling
+        database.ref('categories').on('value',(snapshot) => {
+            let categories = [];
+            let values = snapshot.val();
+
+            for(let key in values) {
+
+                categories.push({
+                    id: key,
+                    name : values[key]
+                });
+            }
+
+            categories = categories.sort((a, b) => a > b ? 1 : -1);
+
+            this.setState({categoryList : categories});
+        })
+    }
+
     checkboxHandler = (event) => {
 
         const imageId = event.target.id;
@@ -262,11 +289,10 @@ class Admin extends Component {
 
         return isDisabled;
 
-
     }
 
-    closeUploadNotification = () => {
-
+    categorySettingsClickHandler = () => {
+        this.setState({modalOpen: true, modalContent : <CategorySettings categories={this.state.categoryList} />})
     }
 
     render() {
@@ -274,8 +300,9 @@ class Admin extends Component {
         let modalState = this.state.modalOpen;
         let modalContent = this.state.modalContent
 
-        // TODO: Fix Error Message to display properly 
+        
 
+        // TODO: Fix Error Message to display properly 
         // TODO: Complete Category Settings and Edit Category
 
         return (
@@ -292,7 +319,7 @@ class Admin extends Component {
                         text="Category Settings"
                         type="button"
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fedit_categories.png?alt=media&token=5ae3be3b-c84f-4abd-bb21-0b1133c6ed64"} 
-                        buttonHandler={() => (console.log("HAH"))}/>
+                        buttonHandler={this.categorySettingsClickHandler}/>
                     <Button
                         disabled={this.buttonDisabled("listItem")}
                         text="Edit Category"
