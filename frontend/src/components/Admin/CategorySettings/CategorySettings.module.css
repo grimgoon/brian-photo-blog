@@ -1,0 +1,42 @@
+.container {
+    padding: 40px 60px;
+}
+
+.header {
+    font-size: 24px;
+    text-align: center;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    color: #3C454C;
+}
+
+.item {
+    padding: 20px 40px;
+    margin-bottom: 30px;
+    background-color: #5eadc5;
+    color: #227b94;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.name {
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.deleteCategory {
+    margin-top: 16px;
+    cursor: pointer;
+}
+
+.deleteCategory img {
+    width: 30px;
+    height: 30px;
+    display: block;
+}

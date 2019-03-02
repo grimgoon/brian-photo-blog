@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import styles from './Admin.module.css';
-import Modal from 'react-responsive-modal';
 
+
+import Modal from 'react-responsive-modal';
 import Overlay from '../UI/Overlay/Overlay';
 
 import Button from '../UI/Button/Button';
@@ -23,9 +24,10 @@ class Admin extends Component {
         categoryList: null,
         folderReference : 'photographs/',
         checkedItemList : [],
-        modalOpen : false,
-        modalContent : null,
-        disableButtons: false
+        categorySettingsOpen : false,
+        deleteImageOpen : false,
+        disableButtons: false,
+        test : null,
     }
 
     componentDidMount() {
@@ -200,7 +202,8 @@ class Admin extends Component {
 
                 categories.push({
                     id: key,
-                    name : values[key]
+                    name : values[key],
+                    status : null
                 });
             }
 
@@ -254,34 +257,15 @@ class Admin extends Component {
         });
     }
 
-    deleteImageModal = () => {
-
-        let modalContent = 
-            <>
-                <p>Are you sure you want to delete these images?</p>
-                <Button 
-                    buttonHandler={() => {this.deleteImage(); this.onCloseModal()}}
-                    text="Delete it!"
-                    imgSrc="https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fdelete_image.png?alt=media&token=111cebaa-7814-49c9-a2fb-050082ce04ea" 
-                />
-            </>;
-        this.setState({modalOpen: true, modalContent : modalContent})
-    }
-
-    onOpenModal = () => {
-        this.setState({ modalOpen: true });
-      };
-    
-    onCloseModal = () => {
-        this.setState({ modalOpen: false });
-    };
-
     buttonDisabled = (buttonType) => {
 
         let isDisabled = false;
 
         if(this.state.disableButtons) {
             isDisabled = true;    
+        }
+        else if(!this.state.imageList || !this.state.categoryList) {
+            isDisabled = true;       
         }
         else if (buttonType === "listItem" && this.state.checkedItemList.length === 0) {
             isDisabled = true;
@@ -292,15 +276,52 @@ class Admin extends Component {
     }
 
     categorySettingsClickHandler = () => {
-        this.setState({modalOpen: true, modalContent : <CategorySettings categories={this.state.categoryList} />})
+        this.setState({categorySettingsOpen : true})
+    }
+
+    
+    categorySettingsCloseHandler = () => {
+        this.setState({categorySettingsOpen : false})
+    }
+
+    deleteImageClickHandler = () => {
+        this.setState({deleteImageOpen : true})
+    }
+
+    
+    deleteImageCloseHandler = () => {
+        this.setState({deleteImageOpen : false})
+    }
+
+    categorySettingsDeleteCategoryClickHandler = (id, newStatus) => {
+        
+        let categories = [...this.state.categoryList];
+
+        let categoryIndex = categories.findIndex(category => category.name === id)
+
+        if(categoryIndex) {
+
+            if(newStatus === "deleteConfirm") {
+                categories[categoryIndex].status = "deleteConfirm";
+            }
+            else if(newStatus === "delete") {
+                categories[categoryIndex].status = "deleteConfirm";    
+            }
+            else if(newStatus === "reset") {
+                categories[categoryIndex].status = null;  
+            }
+
+            this.setState({categoryList : categories});
+
+        }
+        else {
+            // ? 
+        }
+    
     }
 
     render() {
 
-        let modalState = this.state.modalOpen;
-        let modalContent = this.state.modalContent
-
-        
 
         // TODO: Fix Error Message to display properly 
         // TODO: Complete Category Settings and Edit Category
@@ -329,24 +350,38 @@ class Admin extends Component {
                         disabled={this.buttonDisabled("listItem")}
                         text="Delete Image(s)"
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fdelete_image.png?alt=media&token=111cebaa-7814-49c9-a2fb-050082ce04ea"} 
-                        buttonHandler={this.deleteImageModal}/>
+                        buttonHandler={this.deleteImageClickHandler}/>
                     </div>
                     {this.state.uploadingImages ? <ImagesNotification buttonDisabled={this.buttonDisabled()} closeNotification={() => (this.setState({uploadingImages : null}))} uploadingImages={this.state.uploadingImages}/> : null}
                     <ListImages images={this.state.imageList} checkboxHandler={this.checkboxHandler} />
                 </div>
 
                 <Modal 
+                    open={this.state.categorySettingsOpen}
+                    onClose={this.categorySettingsCloseHandler}
                     classNames={{
                         closeButton : styles.modalCloseButton,
-                        modal : styles.modalContent
-                    }}
-                    open={modalState} 
-                    onClose={this.onCloseModal}>
-                    {modalContent}
+                        modal : styles.modalContent}}> 
+                    <CategorySettings categories={this.state.categoryList}/>
                 </Modal>
 
+                <Modal 
+                    open={this.state.deleteImageOpen}
+                    onClose={this.deleteImageCloseHandler}
+                    classNames={{
+                        closeButton : styles.modalCloseButton,
+                        modal : styles.modalContent}}> 
+                     <>
+                        <p>Are you sure you want to delete these images?</p>
+                        <Button 
+                            buttonHandler={() => {this.deleteImage(); this.deleteImageCloseHandler()}}
+                            text="Delete it!"
+                            imgSrc="https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fdelete_image.png?alt=media&token=111cebaa-7814-49c9-a2fb-050082ce04ea" 
+                        />
+                    </>
+                </Modal>
             </>
-        )
+        );
     }
 }
 
