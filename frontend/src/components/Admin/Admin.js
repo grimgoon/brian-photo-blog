@@ -297,15 +297,19 @@ class Admin extends Component {
         
         let categories = [...this.state.categoryList];
 
-        let categoryIndex = categories.findIndex(category => category.name === id)
+        let categoryIndex = categories.findIndex(category => category.id === id)
 
-        if(categoryIndex) {
+        console.log(categories);
+        console.log(id);
+        
+
+        if(categoryIndex !== -1) {
 
             if(newStatus === "deleteConfirm") {
                 categories[categoryIndex].status = "deleteConfirm";
             }
             else if(newStatus === "delete") {
-                categories[categoryIndex].status = "deleteConfirm";    
+                //TODO: Delete category, and remove category from all images that has said category
             }
             else if(newStatus === "reset") {
                 categories[categoryIndex].status = null;  
@@ -362,7 +366,7 @@ class Admin extends Component {
                     classNames={{
                         closeButton : styles.modalCloseButton,
                         modal : styles.modalContent}}> 
-                    <CategorySettings categories={this.state.categoryList}/>
+                    <CategorySettings deleteHandler={(id, status) => this.categorySettingsDeleteCategoryClickHandler(id, status)} categories={this.state.categoryList}/>
                 </Modal>
 
                 <Modal 
