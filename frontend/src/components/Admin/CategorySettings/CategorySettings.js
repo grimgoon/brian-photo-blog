@@ -3,6 +3,8 @@ import styles from './CategorySettings.module.css';
 
 const CategorySettings = (props) => {
 
+    
+
     return (
         <div className={styles.container}>
             <div className={styles.header}>Category Settings</div>
@@ -24,8 +26,6 @@ const CategorySettings = (props) => {
                         </div>
                     }
                     </div>
-
-                    
                 </div>
             ))}
         </div>

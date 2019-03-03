@@ -195,6 +195,7 @@ class Admin extends Component {
 
         // TODO: Error Handling
         database.ref('categories').on('value',(snapshot) => {
+
             let categories = [];
             let values = snapshot.val();
 
@@ -281,7 +282,12 @@ class Admin extends Component {
 
     
     categorySettingsCloseHandler = () => {
-        this.setState({categorySettingsOpen : false})
+
+        let categories = [...this.state.categoryList];
+
+        categories.forEach((category,i) => categories[i].status = "reset");
+
+        this.setState({categorySettingsOpen : false, categoryList : categories});
     }
 
     deleteImageClickHandler = () => {
@@ -299,37 +305,62 @@ class Admin extends Component {
 
         let categoryIndex = categories.findIndex(category => category.id === id)
 
-        console.log(categories);
-        console.log(id);
-        
-
         if(categoryIndex !== -1) {
 
             if(newStatus === "deleteConfirm") {
                 categories[categoryIndex].status = "deleteConfirm";
+                this.setState({categoryList : categories}); 
             }
             else if(newStatus === "delete") {
-                //TODO: Delete category, and remove category from all images that has said category
+                this.deleteCategory(id);
             }
             else if(newStatus === "reset") {
-                categories[categoryIndex].status = null;  
+                categories[categoryIndex].status = null;
+                this.setState({categoryList : categories}); 
+
             }
 
-            this.setState({categoryList : categories});
-
-        }
+        } 
         else {
             // ? 
         }
     
     }
 
-    render() {
+    deleteCategory = (id) => {
 
+        Firebase.database().ref('categories').child(id).remove().then(() => {
+            this.removeCategoryFromPhotograph(this.state.imageList,id);
+        });
+    }
+
+    removeCategoryFromPhotograph = (photographsArray, deleteCategory) => {
+        
+        let removeCategoryFromPhotograph = {};
+
+        photographsArray.forEach((photograph => {
+
+            console.log(photograph);
+
+            let findCategory = Object.keys(photograph.categories).find(category => category === deleteCategory);
+
+            if(findCategory) {
+                let key = '/' + photograph.id + '/categories/' + deleteCategory; 
+                removeCategoryFromPhotograph[key] = null; 
+            }
+        }));
+
+        // Error Handling?
+
+        Firebase.database().ref('photographs').update(removeCategoryFromPhotograph).then((result) => {
+            console.log(result);
+        })
+    }
+
+    render() {
 
         // TODO: Fix Error Message to display properly 
         // TODO: Complete Category Settings and Edit Category
-
         return (
             <> 
                 <div className={styles.content}>
