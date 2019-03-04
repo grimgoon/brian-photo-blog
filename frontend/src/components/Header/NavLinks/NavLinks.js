@@ -34,10 +34,39 @@ class NavLinks extends Component {
 
     //TODO: Create dropdown for categories if the amount of categories go over X amount 
 
+    createDesktopLinks = () => {
+
+        const categories = this.state.categories;
+
+        console.log(this.state.categories.length);
+
+        if(categories.length > 3) {
+
+        }
+        else {
+            return categories.map((mapCategory) => (
+                <NavLink 
+                    key={mapCategory.id}
+                    exact className={styles.link} 
+                    activeClassName={styles.active} 
+                    to={"/category/" + mapCategory.id}>
+                    {mapCategory.value}
+                </NavLink>
+            ));    
+        }
+
+
+        
+    }
+
+    createMobileLinks = () => {
+        return this.state.categories.map((mapCategory) => (<NavLink key={mapCategory.id} exact className={styles.mobileLink} activeClassName={styles.active} to={"/category/" + mapCategory.id}>{mapCategory.value}</NavLink>));
+    }
+
     render () {
 
-        let desktopLinks = this.state.categories.map((mapCategory) => (<NavLink key={mapCategory.id} exact className={styles.link} activeClassName={styles.active} to={"/category/" + mapCategory.id}>{mapCategory.value}</NavLink>));
-        let mobileLinks = this.state.categories.map((mapCategory) => (<NavLink key={mapCategory.id} exact className={styles.mobileLink} activeClassName={styles.active} to={"/category/" + mapCategory.id}>{mapCategory.value}</NavLink>));
+        const desktopLinks = this.createDesktopLinks();
+        const mobileLinks = this.createDesktopLinks();
 
         return (
             <>
