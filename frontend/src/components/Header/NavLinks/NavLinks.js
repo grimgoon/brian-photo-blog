@@ -40,27 +40,38 @@ class NavLinks extends Component {
 
         console.log(this.state.categories.length);
 
-        if(categories.length > 3) {
+        const navlinks = categories.map((mapCategory) => (
+            <NavLink 
+                key={mapCategory.id}
+                exact
+                className={styles.link} 
+                activeClassName={styles.active} 
+                to={"/category/" + mapCategory.id}>
+                {mapCategory.value}
+            </NavLink>
+        ));   
 
+
+        if(categories.length > 3) {
+            return <div>{navlinks}</div>
         }
         else {
-            return categories.map((mapCategory) => (
-                <NavLink 
-                    key={mapCategory.id}
-                    exact className={styles.link} 
-                    activeClassName={styles.active} 
-                    to={"/category/" + mapCategory.id}>
-                    {mapCategory.value}
-                </NavLink>
-            ));    
-        }
-
-
-        
+            return navlinks;  
+        }  
     }
 
+
     createMobileLinks = () => {
-        return this.state.categories.map((mapCategory) => (<NavLink key={mapCategory.id} exact className={styles.mobileLink} activeClassName={styles.active} to={"/category/" + mapCategory.id}>{mapCategory.value}</NavLink>));
+        return this.state.categories.map((mapCategory) => (
+            <NavLink 
+                key={mapCategory.id}
+                exact
+                className={styles.mobileLink}
+                activeClassName={styles.active}
+                to={"/category/" + mapCategory.id}>
+                {mapCategory.value}
+            </NavLink>
+        ));
     }
 
     render () {
