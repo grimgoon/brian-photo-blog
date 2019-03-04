@@ -4,6 +4,8 @@ import styles from './CategorySettings.module.css';
 const CategorySettings = (props) => {
 
     
+    console.log(props.categoryName);
+    
 
     return (
         <div className={styles.container}>
@@ -28,6 +30,15 @@ const CategorySettings = (props) => {
                     </div>
                 </div>
             ))}
+            <div className={styles.addCategory}>
+                <div className={styles.addCategoryHeader}>add new category</div>
+                <div className={styles.addCategorySubmit}>
+                    <input type="text" value={props.categoryName} onChange={props.categoryNameHandler} placeholder="Category Name"></input>
+                    <div onClick={props.submitHandler} className={styles.submitButton}>
+                        <img alt="Submit Button" src="https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Faccept_image.png?alt=media&token=d341d92e-58bc-49fc-be83-001fd188b22a"/>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 

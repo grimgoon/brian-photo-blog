@@ -27,7 +27,7 @@ class Admin extends Component {
         categorySettingsOpen : false,
         deleteImageOpen : false,
         disableButtons: false,
-        test : null,
+        addCategoryName : "",
     }
 
     componentDidMount() {
@@ -327,6 +327,30 @@ class Admin extends Component {
     
     }
 
+    categoryAddHandler = (e) => {
+        this.setState({
+            addCategoryName : e.target.value,
+        });
+     }
+
+     categorySettingsAddHandler = () => {
+
+        const categoryName = this.state.addCategoryName;
+        const invalidNames = ["all", "home"];
+
+        if(invalidNames.find(name => name === categoryName) || !categoryName) {
+            // Error
+        }
+        else {
+            const keyValue = this.slugifyString(categoryName);
+
+            Firebase.database().ref('categories').child(keyValue).set(categoryName).then(result => {
+                this.setState({addCategoryName : ""});
+            });
+            // Error Handling?
+        }
+     }
+
     deleteCategory = (id) => {
 
         Firebase.database().ref('categories').child(id).remove().then(() => {
@@ -335,13 +359,10 @@ class Admin extends Component {
     }
 
     removeCategoryFromPhotograph = (photographsArray, deleteCategory) => {
-        
+
         let removeCategoryFromPhotograph = {};
 
         photographsArray.forEach((photograph => {
-
-            console.log(photograph);
-
             let findCategory = Object.keys(photograph.categories).find(category => category === deleteCategory);
 
             if(findCategory) {
@@ -353,9 +374,28 @@ class Admin extends Component {
         // Error Handling?
 
         Firebase.database().ref('photographs').update(removeCategoryFromPhotograph).then((result) => {
-            console.log(result);
+            
         })
     }
+
+
+    slugifyString = (string) => {
+
+        const a = 'àáäâãåăæçèéëêǵḧìíïîḿńǹñòóöôœṕŕßśșțùúüûǘẃẍÿź·/_,:;'
+        const b = 'aaaaaaaaceeeeghiiiimnnnoooooprssstuuuuuwxyz------'
+        const p = new RegExp(a.split('').join('|'), 'g');
+
+        return string.toString().toLowerCase()
+        .replace(/\s+/g, '-') // Replace spaces with -
+        .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
+        .replace(/&/g, '-and-') // Replace & with ‘and’
+        .replace(/[^\w\-]+/g, '') // Remove all non-word characters
+        .replace(/\-\-+/g, '-') // Replace multiple - with single -
+        .replace(/^-+/, '') // Trim - from start of text
+        .replace(/-+$/, '') // Trim - from end of text
+    }
+
+
 
     render() {
 
@@ -397,7 +437,7 @@ class Admin extends Component {
                     classNames={{
                         closeButton : styles.modalCloseButton,
                         modal : styles.modalContent}}> 
-                    <CategorySettings deleteHandler={(id, status) => this.categorySettingsDeleteCategoryClickHandler(id, status)} categories={this.state.categoryList}/>
+                    <CategorySettings categoryName={this.state.addCategoryName} categoryNameHandler={this.categoryAddHandler} submitHandler={this.categorySettingsAddHandler} deleteHandler={(id, status) => this.categorySettingsDeleteCategoryClickHandler(id, status)} categories={this.state.categoryList}/>
                 </Modal>
 
                 <Modal 
