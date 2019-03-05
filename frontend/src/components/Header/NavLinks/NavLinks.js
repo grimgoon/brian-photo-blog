@@ -97,7 +97,7 @@ class NavLinks extends Component {
                 <div
                     style={{justifyContent : containerJustify}} 
                     className={styles.linkContainer}>
-                    <NavLink style={{marginLeft : homeMargin}} exact className={styles.link} activeClassName={styles.active} to="/">Home</NavLink>
+                    <NavLink style={{marginLeft : homeMargin, marginRight : homeMargin}} exact className={styles.link} activeClassName={styles.active} to="/">Home</NavLink>
                     {desktopLinks}
                 </div>
     

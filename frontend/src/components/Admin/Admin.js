@@ -10,6 +10,7 @@ import ButtonSpecial from '../UI/Button/ButtonSpecial';
 import ListImages from './ListImages/ListImages';
 import ImagesNotification from './UploadingImagesStatusNotification/UploadingImagesStatusNotification';
 import CategorySettings from './CategorySettings/CategorySettings';
+import EditCategory from './EditCategory/EditCategory.js'
 
 import Firebase from 'firebase/app';
 import 'firebase/storage';
@@ -25,6 +26,7 @@ class Admin extends Component {
         folderReference : 'photographs/',
         checkedItemList : [],
         categorySettingsOpen : false,
+        editCategoryOpen : false,
         deleteImageOpen : false,
         disableButtons: false,
         addCategoryName : "",
@@ -217,13 +219,18 @@ class Admin extends Component {
     checkboxHandler = (event) => {
 
         const imageId = event.target.id;
+        
         let checkedItemList = [...this.state.checkedItemList];
-    
+
+        const imageList = this.state.imageList;
+        const imageObject = imageList.find(image => image.id === imageId);
+
         if(event.target.checked) {
-            checkedItemList.push(imageId);
+            
+            checkedItemList.push(imageObject);
         }
         else {
-            var index = checkedItemList.indexOf(imageId);
+            var index = checkedItemList.indexOf(imageObject);
             if(index !== -1) {
                 checkedItemList.splice(index,1); 
             }
@@ -248,7 +255,7 @@ class Admin extends Component {
 
         checkedItemList.forEach((file,i) => {
 
-            Firebase.database().ref('photographs').child(file).remove().then(() => {
+            Firebase.database().ref('photographs').child(file.id).remove().then(() => {
 
                 let newSelectedList =  [...this.state.checkedItemList];
                 newSelectedList.shift();
@@ -395,12 +402,31 @@ class Admin extends Component {
         .replace(/-+$/, '') // Trim - from end of text
     }
 
+    editCategoryClickHandler = () => {
+        this.setState({editCategoryOpen : true})
+    }
+
+    editCategoryCloseHandler = () => {
+        this.setState({editCategoryOpen : false});
+    }
+
+    editCategoryAddCategoryClickHandler = () => {
+
+    }
+
+    editCategoryDeleteCategoryClickHandler = () => {
+
+    }
+
 
 
     render() {
 
         // TODO: Fix Error Message to display properly 
         // TODO: Complete Category Settings and Edit Category
+
+        console.log(this.state.checkedItemList);
+
         return (
             <> 
                 <div className={styles.content}>
@@ -420,7 +446,7 @@ class Admin extends Component {
                         disabled={this.buttonDisabled("listItem")}
                         text="Edit Category"
                         imgSrc={"https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fedit_category.png?alt=media&token=104aca03-159a-4def-8acc-9b3fbe65bff3"} 
-                        buttonHandler={() => (console.log("HAH"))}/>
+                        buttonHandler={this.editCategoryClickHandler}/>
                     <Button
                         disabled={this.buttonDisabled("listItem")}
                         text="Delete Image(s)"
@@ -438,6 +464,20 @@ class Admin extends Component {
                         closeButton : styles.modalCloseButton,
                         modal : styles.modalContent}}> 
                     <CategorySettings categoryName={this.state.addCategoryName} categoryNameHandler={this.categoryAddHandler} submitHandler={this.categorySettingsAddHandler} deleteHandler={(id, status) => this.categorySettingsDeleteCategoryClickHandler(id, status)} categories={this.state.categoryList}/>
+                </Modal>
+
+                <Modal 
+                    open={this.state.editCategoryOpen}
+                    onClose={this.editCategoryCloseHandler}
+                    classNames={{
+                        closeButton : styles.modalCloseButton,
+                        modal : styles.modalContent}}> 
+                    <EditCategory 
+                        deleteCategory={this.editCategoryDeleteCategoryClickHandler}
+                        addCategory={this.editCategoryAddCategoryClickHandler}
+                        categories={this.state.categoryList}
+                        selectedImages
+                        images={this.state.checkedItemList}/>
                 </Modal>
 
                 <Modal 
