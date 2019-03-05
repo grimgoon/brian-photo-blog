@@ -7,10 +7,12 @@ class NavLinks extends Component {
 
     state = {
         categories: [],
+        dropdownLength : 3
     };
 
     componentDidMount() {
-        this.getCategories();  
+        this.getCategories();
+
     }
 
     getCategories = () => {
@@ -37,9 +39,6 @@ class NavLinks extends Component {
     createDesktopLinks = () => {
 
         const categories = this.state.categories;
-
-        console.log(this.state.categories.length);
-
         const navlinks = categories.map((mapCategory) => (
             <NavLink 
                 key={mapCategory.id}
@@ -51,9 +50,18 @@ class NavLinks extends Component {
             </NavLink>
         ));   
 
+        if(categories.length > this.state.dropdownLength) {
 
-        if(categories.length > 3) {
-            return <div>{navlinks}</div>
+            const dropdownContent = 
+                <div className={styles.dropdown}>
+                    <div className={styles.dropbtn}>Categories <img src="https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fdrop-down-arrow.png?alt=media&token=2eb80e6c-bff9-457f-80ba-7d6214617c0f" alt="Dropdown Arrow"/></div>
+                    <div className={styles.dropdown_content}>
+                        {navlinks}
+                    </div>
+                </div>
+
+            
+            return dropdownContent;
         }
         else {
             return navlinks;  
@@ -79,10 +87,17 @@ class NavLinks extends Component {
         const desktopLinks = this.createDesktopLinks();
         const mobileLinks = this.createDesktopLinks();
 
+        const isDropdown = this.state.categories.length > this.state.dropdownLength;
+
+        const containerJustify = isDropdown ? "flex-start" : "space-evenly"
+        const homeMargin = isDropdown ? "10%" : "0px";
+
         return (
             <>
-                <div className={styles.linkContainer}>
-                    <NavLink exact className={styles.link} activeClassName={styles.active} to="/">Home</NavLink>
+                <div
+                    style={{justifyContent : containerJustify}} 
+                    className={styles.linkContainer}>
+                    <NavLink style={{marginLeft : homeMargin}} exact className={styles.link} activeClassName={styles.active} to="/">Home</NavLink>
                     {desktopLinks}
                 </div>
     
