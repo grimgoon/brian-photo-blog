@@ -359,7 +359,6 @@ class Admin extends Component {
      }
 
     deleteCategory = (id) => {
-
         Firebase.database().ref('categories').child(id).remove().then(() => {
             this.removeCategoryFromPhotograph(this.state.imageList,id);
         });
@@ -410,15 +409,12 @@ class Admin extends Component {
         this.setState({editCategoryOpen : false});
     }
 
-    editCategoryAddCategoryClickHandler = () => {
-
+    editCategoryAddCategoryClickHandler = (id) => {
     }
 
-    editCategoryDeleteCategoryClickHandler = () => {
+    editCategoryDeleteCategoryClickHandler = (id) => {
 
     }
-
-
 
     render() {
 
@@ -476,8 +472,8 @@ class Admin extends Component {
                         deleteCategory={this.editCategoryDeleteCategoryClickHandler}
                         addCategory={this.editCategoryAddCategoryClickHandler}
                         categories={this.state.categoryList}
-                        selectedImages
-                        images={this.state.checkedItemList}/>
+                        selectedImages={this.state.checkedItemList}
+                        images={this.state.imageList}/>
                 </Modal>
 
                 <Modal 
