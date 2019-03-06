@@ -28,14 +28,19 @@ class EditCategory extends Component {
         );
 
         const imageList = selectedImages.map(image => 
-            <div key={image.id}>
-                {image.id} | Categories: {Object.values(image.categories).join(', ')}
+            <div className={styles.imageItem} key={image.id}>
+                <div>
+                    {image.id}
+                </div>
+                <div>
+                    <b>Categories:</b> {Object.values(image.categories).join(', ')}
+                </div>
             </div> 
         );
 
         return (
             <div className={styles.container}>
-                <div>
+                <div className={styles.menu}>
                     <select onChange={this.selectCategoryHandler}>
                         {selectCategoryList}
                     </select>
