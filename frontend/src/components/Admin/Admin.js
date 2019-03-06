@@ -30,6 +30,7 @@ class Admin extends Component {
         deleteImageOpen : false,
         disableButtons: false,
         addCategoryName : "",
+        editCategoryValue: null,
     }
 
     componentDidMount() {
@@ -52,6 +53,9 @@ class Admin extends Component {
                 this.setState({disableButtons : false});
             }
         }
+
+
+
     }
 
     uploadImage = (event) => {
@@ -222,15 +226,12 @@ class Admin extends Component {
         
         let checkedItemList = [...this.state.checkedItemList];
 
-        const imageList = this.state.imageList;
-        const imageObject = imageList.find(image => image.id === imageId);
-
         if(event.target.checked) {
             
-            checkedItemList.push(imageObject);
+            checkedItemList.push(imageId);
         }
         else {
-            var index = checkedItemList.indexOf(imageObject);
+            var index = checkedItemList.indexOf(imageId);
             if(index !== -1) {
                 checkedItemList.splice(index,1); 
             }
@@ -255,7 +256,7 @@ class Admin extends Component {
 
         checkedItemList.forEach((file,i) => {
 
-            Firebase.database().ref('photographs').child(file.id).remove().then(() => {
+            Firebase.database().ref('photographs').child(file).remove().then(() => {
 
                 let newSelectedList =  [...this.state.checkedItemList];
                 newSelectedList.shift();
@@ -360,11 +361,12 @@ class Admin extends Component {
 
     deleteCategory = (id) => {
         Firebase.database().ref('categories').child(id).remove().then(() => {
-            this.removeCategoryFromPhotograph(this.state.imageList,id);
+            this.removeCategoryFromPhotographs(this.state.imageList,id);
         });
     }
 
-    removeCategoryFromPhotograph = (photographsArray, deleteCategory) => {
+    removeCategoryFromPhotographs = (photographsArray, deleteCategory) => {
+
 
         let removeCategoryFromPhotograph = {};
 
@@ -377,11 +379,45 @@ class Admin extends Component {
             }
         }));
 
-        // Error Handling?
-
-        Firebase.database().ref('photographs').update(removeCategoryFromPhotograph).then((result) => {
+        if(Object.keys(removeCategoryFromPhotograph).length) {
+            // Error Handling?
+            Firebase.database().ref('photographs').update(removeCategoryFromPhotograph).then((result) => {
             
-        })
+            });
+        }
+        
+    }
+
+    addCategoryToPhotographs = (photographsArray,addCategory) => {
+
+        let addCategoryToPhotographs = {};
+        const categories = [...this.state.categoryList];
+        const categoryData = categories.find(category => category.id === addCategory);
+
+        if(categoryData) {
+            photographsArray.forEach((photograph => {
+
+                let findCategory = Object.keys(photograph.categories).find(category => category === categoryData.id)
+
+                console.log(findCategory);
+
+                let key = '/' + photograph.id + '/categories/' + categoryData.id; 
+                addCategoryToPhotographs[key] = categoryData.name; 
+            }));    
+
+            console.log(addCategoryToPhotographs);
+
+            if(Object.keys(addCategoryToPhotographs).length) {
+                // Error Handling?
+                Firebase.database().ref('photographs').update(addCategoryToPhotographs).then((result) => {
+                });
+            }
+        } else {
+            //Error Handling:  Log that someone tried to send in a faulty category
+        }
+       
+
+
     }
 
 
@@ -409,19 +445,20 @@ class Admin extends Component {
         this.setState({editCategoryOpen : false});
     }
 
-    editCategoryAddCategoryClickHandler = (id) => {
+    editCategoryAddCategoryClickHandler = (images,category) => {
+        console.log(images, category);
+        this.addCategoryToPhotographs(images,category);
     }
 
-    editCategoryDeleteCategoryClickHandler = (id) => {
-
+    editCategoryDeleteCategoryClickHandler = (images, category) => {
+        console.log(images, category);
+        this.removeCategoryFromPhotographs(images,category);
     }
 
     render() {
 
         // TODO: Fix Error Message to display properly 
         // TODO: Complete Category Settings and Edit Category
-
-        console.log(this.state.checkedItemList);
 
         return (
             <> 
@@ -468,9 +505,9 @@ class Admin extends Component {
                     classNames={{
                         closeButton : styles.modalCloseButton,
                         modal : styles.modalContent}}> 
-                    <EditCategory 
-                        deleteCategory={this.editCategoryDeleteCategoryClickHandler}
-                        addCategory={this.editCategoryAddCategoryClickHandler}
+                    <EditCategory
+                        deleteCategory={(images,category) => this.editCategoryDeleteCategoryClickHandler(images,category)}
+                        addCategory={(images,category) => this.editCategoryAddCategoryClickHandler(images,category)}
                         categories={this.state.categoryList}
                         selectedImages={this.state.checkedItemList}
                         images={this.state.imageList}/>
