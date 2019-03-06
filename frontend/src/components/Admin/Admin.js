@@ -15,7 +15,9 @@ import EditCategory from './EditCategory/EditCategory.js'
 import Firebase from 'firebase/app';
 import 'firebase/storage';
 import 'firebase/database';
+import 'firebase/auth';
 import FirebaseConfig from '../Firebase/Config/Config';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 class Admin extends Component {
 
@@ -31,14 +33,25 @@ class Admin extends Component {
         disableButtons: false,
         addCategoryName : "",
         editCategoryValue: null,
+        isSignedIn : false,
+        isLoading: true,
+        isLoadingMessage : "Loading...",
     }
 
-    componentDidMount() {
+ 
+
+     componentDidMount() {
+
         Firebase.initializeApp(FirebaseConfig);
         this.getImageList();
         this.getCategoryList();
 
-
+        this.isLoading();
+    
+        // Listen to the Firebase Auth state and set the local state.
+        this.unregisterAuthObserver = Firebase.auth().onAuthStateChanged(
+            (user) => this.setState({isSignedIn: !!user})
+        );
     }
 
     componentDidUpdate() {
@@ -54,6 +67,32 @@ class Admin extends Component {
             }
         }
 
+
+    }
+
+    componentWillUnmount() {
+        // Make sure we un-register Firebase observers when the component unmounts.
+        this.unregisterAuthObserver();
+    }
+
+    isLoading = () => {
+
+        let i = 0;
+        
+        let loading = setInterval(() => {
+
+            if(i > 10) {
+                this.setState({isLoadingMessage : "An error occured. Please try again later."});
+                clearInterval(loading);
+            }
+            else if(this.state.imageList && this.state.categoryList) {
+                clearInterval(loading);
+                this.setState({isLoading : false})
+            }
+
+            i++;
+
+        }, 1500)
 
 
     }
@@ -455,11 +494,49 @@ class Admin extends Component {
         this.removeCategoryFromPhotographs(images,category);
     }
 
+
+    uiConfig = {
+        // Popup signin flow rather than redirect flow.
+        signInFlow: 'popup',
+        // We will display Google and Facebook as auth providers.
+        signInOptions: [
+          Firebase.auth.EmailAuthProvider.PROVIDER_ID
+        ],
+        callbacks: {
+          // Avoid redirects after sign-in.
+          signInSuccessWithAuthResult: () => false
+        }
+      };
+
+
     render() {
 
         // TODO: Fix Error Message to display properly 
-        // TODO: Complete Category Settings and Edit Category
+        if(this.state.isLoading) {
+            return (
+                <div className="loadingScreen">
+                    <div className="sk_folding_cube">
+                        <div className="sk_cube1 sk_cube"></div>
+                        <div className="sk_cube2 sk_cube"></div>
+                        <div className="sk_cube3 sk_cube"></div>
+                        <div className="sk_cube4 sk_cube"></div>
+                    </div>
+                    <div>{this.state.isLoadingMessage}</div>
+                </div>
+            ) 
+                
+        }
 
+        if (!this.state.isSignedIn) {
+            return (
+                <div className={styles.loginHeader}>
+                  <h1>Admin Panel</h1>
+                  <p>Please sign-in:</p>
+                  <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={Firebase.auth()}/>
+                </div>
+            );
+        }
+    
         return (
             <> 
                 <div className={styles.content}>
