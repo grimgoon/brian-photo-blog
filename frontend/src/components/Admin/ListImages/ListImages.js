@@ -5,15 +5,17 @@ import LazyLoad from 'react-lazyload';
 const ListImages = (props) => {
 
     // TODO: Make this text prettier if no images were found or pass to the errorMessage state
-    let List = "No Images could be found";
+    let List = "";
 
     // TODO: Outsource to Redux
     const baseImageURL = "https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/photographs%2F";
     const queryString =  "?alt=media";
 
+    const lazyLoadOffset = props.images.length > 5 ? -100 : 0 
+
     if(props.images) {
         List = props.images.map(listItem => (
-            <LazyLoad offset={-100} height={60} key={listItem.id}>
+            <LazyLoad offset={lazyLoadOffset} height={60} key={listItem.id}>
                 <div 
                     onChange={props.checkboxHandler}
                     className={styles.listItem}>
