@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import {Route} from 'react-router-dom';
 import axios from  '../Firebase/Database/Database';
 
+import LoadingScreen from 'react-loading-screen';
+
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import GalleryImages from './GalleryImages/GalleryImages'; 
-
 
 class Content extends Component {
 
@@ -14,11 +15,35 @@ class Content extends Component {
         categories: null,
         photographList: null,
         route: null,
+        isLoading : true,
+        isLoadingMessage : "Loading...",
     }
 
     componentDidMount() {
         this.getCategories();
         console.log("Did Mount");
+        this.isLoading();
+    }
+
+    
+    isLoading = () => {
+
+        let i = 0;
+        
+        let loading = setInterval(() => {
+
+            if(i > 10) {
+                this.setState({isLoadingMessage : "An error occured. Please try again later."});
+                clearInterval(loading);
+            }
+            else if(this.state.photographList && this.state.categories) {
+                clearInterval(loading);
+                this.setState({isLoading : false})
+            }
+
+            i++;
+
+        }, 1500)
     }
 
     getPhotographList = () => {
@@ -37,7 +62,6 @@ class Content extends Component {
         }).catch(err => {
             // Fix Error Handling
         });
-  
     }
 
     getCategories = () => {
@@ -111,14 +135,22 @@ class Content extends Component {
     }
 
     render() {
-
         let routes = this.setRoute2()
 
         return (
-            <>
-                <Header/>
-                {routes}
-                <Footer/>
+            
+
+            <>  
+                <LoadingScreen 
+                    loading={this.state.isLoading}
+                    text="Loading..."
+                    bgColor="#5eadc5"
+                    textColor="white"
+                    logoSrc="https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Floading_icon.gif?alt=media&token=b45c1ef0-cbbf-4227-8264-0c7fb15d7db9">
+                    <Header/>
+                    {routes}
+                    <Footer/>
+                </LoadingScreen>
             </>
 
         );

@@ -66,8 +66,6 @@ class Admin extends Component {
                 this.setState({disableButtons : false});
             }
         }
-
-
     }
 
     componentWillUnmount() {
@@ -93,9 +91,8 @@ class Admin extends Component {
             i++;
 
         }, 1500)
-
-
     }
+
 
     uploadImage = (event) => {
 
@@ -523,8 +520,7 @@ class Admin extends Component {
                     </div>
                     <div>{this.state.isLoadingMessage}</div>
                 </div>
-            ) 
-                
+            )       
         }
 
         if (!this.state.isSignedIn) {
@@ -538,7 +534,7 @@ class Admin extends Component {
         }
     
         return (
-            <> 
+            <>
                 <div className={styles.content}>
                     <div className={styles.header}>
                     <ButtonSpecial
