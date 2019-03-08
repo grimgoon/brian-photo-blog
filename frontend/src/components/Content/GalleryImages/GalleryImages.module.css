@@ -52,10 +52,6 @@
 
 }
 
-.images2 > div > div {
-    transition: all 0.6s ease; 
-}
-
 .images2 img { 
     width: 100%;
     height: auto;

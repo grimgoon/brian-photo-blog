@@ -15,16 +15,18 @@ class GalleryImages extends Component {
     }
 
 
-
+    // TODO: Try cleaning the code up. By fetching the images height. etc. first async
+    // And then just from there  always filter by cross referencing one list with id,height & width VS the photolist
+    // So you don't have to make async requests every time which is stupid.
 
     
      componentDidMount() {
-        this.listImages(1);
+        this.listImages();
      }
 
      componentDidUpdate() {
         if(!this.props.photoList && !this.props.error) {
-            this.listImages(2);
+            this.listImages();
         }
      }
 
@@ -35,7 +37,7 @@ class GalleryImages extends Component {
         }
       }
     
-    listImages(id) {
+    listImages() {
 
         if(this.props.photoList && !this.props.error) {
 
