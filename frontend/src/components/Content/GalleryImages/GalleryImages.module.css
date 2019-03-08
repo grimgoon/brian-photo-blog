@@ -3,9 +3,9 @@
     width: 86%;
     margin: 0 auto;
 
-    -moz-column-count:    3;
-    -webkit-column-count: 3;
-    column-count:         3;
+    -moz-column-count:    1;
+    -webkit-column-count: 1;
+    column-count:         1;
     line-height: 0;
 
     -webkit-column-gap:   20px;
@@ -19,4 +19,46 @@
     margin-top: 20px;
     box-shadow: 5px 5px 20px;
     transition: all 0.6 linear;
+}
+
+@media only screen  and (min-width : 768px) {
+    .images {
+        -moz-column-count:    2;
+        -webkit-column-count: 2;
+        column-count:         2;
+    }
+}
+
+/* Desktops & Laptops */
+@media only screen  and (min-width : 1224px) {
+    .images {
+        -moz-column-count:    3;
+        -webkit-column-count: 3;
+        column-count:         3;
+    }
+}
+
+
+.images2 {
+    width: 86%;
+    margin: 0 auto;
+    display: flex;
+}
+
+.images2 > div {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.images2 > div > div {
+    transition: all 0.6s ease; 
+}
+
+.images2 img { 
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+    box-shadow: 5px 5px 20px;
 }

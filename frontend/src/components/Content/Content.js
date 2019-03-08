@@ -21,6 +21,7 @@ class Content extends Component {
 
     componentDidMount() {
         this.getCategories();
+        this.getPhotographList();
         console.log("Did Mount");
         this.isLoading();
     }
