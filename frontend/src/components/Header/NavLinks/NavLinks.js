@@ -33,9 +33,7 @@ class NavLinks extends Component {
 
         
     }
-
-    //TODO: Create dropdown for categories if the amount of categories go over X amount 
-
+    
     createDesktopLinks = () => {
 
         const categories = this.state.categories;

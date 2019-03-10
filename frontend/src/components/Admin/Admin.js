@@ -284,8 +284,6 @@ class Admin extends Component {
 
     }
 
-    // TODO: Fix so when deleting an item it gets removed from the selected items list.
-
     deleteImage = () => {
 
         let checkedItemList = [...this.state.checkedItemList];
