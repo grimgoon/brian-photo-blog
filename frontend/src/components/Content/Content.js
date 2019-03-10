@@ -141,8 +141,6 @@ class Content extends Component {
         let routes = this.setRoute2()
 
         return (
-            
-
             <>  
                 <LoadingScreen 
                     loading={this.state.isLoading}
@@ -155,7 +153,6 @@ class Content extends Component {
                     <Footer/>
                 </LoadingScreen>
             </>
-
         );
     }
 }

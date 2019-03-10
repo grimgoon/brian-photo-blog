@@ -573,6 +573,7 @@ class Admin extends Component {
                 <Modal 
                     open={this.state.categorySettingsOpen}
                     onClose={this.categorySettingsCloseHandler}
+                    blockScroll={false}
                     classNames={{
                         closeButton : styles.modalCloseButton,
                         modal : styles.modalContent}}> 
@@ -582,6 +583,7 @@ class Admin extends Component {
                 <Modal 
                     open={this.state.editCategoryOpen}
                     onClose={this.editCategoryCloseHandler}
+                    blockScroll={false}
                     classNames={{
                         closeButton : styles.modalCloseButton,
                         modal : styles.modalContent}}> 
@@ -596,6 +598,7 @@ class Admin extends Component {
                 <Modal 
                     open={this.state.deleteImageOpen}
                     onClose={this.deleteImageCloseHandler}
+                    blockScroll={false}
                     classNames={{
                         closeButton : styles.modalCloseButton,
                         modal : styles.modalContent}}> 

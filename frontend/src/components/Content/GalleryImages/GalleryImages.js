@@ -91,8 +91,6 @@ class GalleryImages extends Component {
                 
             });
 
-            
-
             imageList = 
                 <>
                     <div>
@@ -107,9 +105,7 @@ class GalleryImages extends Component {
                 </>
         
             return imageList
-        
         }
-
         return null;
     }
 
@@ -136,6 +132,8 @@ class GalleryImages extends Component {
                 <Modal 
                     open={this.state.imageModalOpen}
                     onClose={this.clickImageCloseHandler}
+                    animationDuration={200}
+                    blockScroll={false}
                     classNames={{
                         closeButton : styles.modalCloseButton,
                         modal : modalOrientation
