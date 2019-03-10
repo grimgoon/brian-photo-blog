@@ -38,7 +38,8 @@ class Admin extends Component {
         isLoadingMessage : "Loading...",
     }
 
- 
+    baseImageURL = "https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/photographs%2F";
+    queryString =  "?alt=media";
 
      componentDidMount() {
 
@@ -137,27 +138,35 @@ class Admin extends Component {
             let fileReference = folderReference + file.name;
             let imageReference = storageRef.child(fileReference);
 
-            imageReference.put(file).then((snapshot) => {
-                database.ref(folderReference).child(imageName).set({
-                    fileType : fileType,
-                    date : Date.now(),
-                    categories : {
-                        all : "All"
-                    },
-                    group : "unset",
-                    order: i
-                }).then(() => {
+                imageReference.put(file).then((snapshot) => {
 
-                    this.updateItemUploadingImageList(file.name,"uploaded");
+                    console.log(file);
 
-                }).error((error) => {
-                    // Error to add file to database
+                    let image = new Image();
+                    image.src = this.baseImageURL + imageName + "." + fileType + this.queryString;
+        
+                    image.onload = () => {
+
+                        Firebase.database().ref(folderReference).child(imageName).set({
+                            fileType : fileType,
+                            date : Date.now(),
+                            categories : {
+                                all : "All"
+                            },
+                            group : "unset",
+                            order: i,
+                            height: image.height,
+                            width: image.width,
+
+                        }).then(() => {
+                            this.updateItemUploadingImageList(file.name,"uploaded");
+                        });
+                    }
+                }).catch((error) => {
+                    // Error to upload file 
                 });
-
-            }).catch((error) => {
-                // Error to upload file 
-            });
-        })
+            
+        });
 
         this.updateOrderGroup(updateOrderCounter);
     }

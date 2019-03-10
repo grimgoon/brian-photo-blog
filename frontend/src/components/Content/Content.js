@@ -59,6 +59,8 @@ class Content extends Component {
                 });
             }
 
+            photographs = photographs.sort((a, b) => (a.order) > b.order ? 1 : -1);
+
             this.setState({photographList : photographs});
         }).catch(err => {
             // Fix Error Handling

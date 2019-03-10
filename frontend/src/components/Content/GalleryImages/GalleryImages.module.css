@@ -43,12 +43,17 @@
     width: 86%;
     margin: 0 auto;
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
 }
 
 .images2 > div {
-    width: 30%;
+    width: 100%;
     display: flex;
     flex-direction: column;
+    
 
 }
 
@@ -57,4 +62,20 @@
     height: auto;
     margin-top: 20px;
     box-shadow: 5px 5px 20px;
+}
+
+@media only screen  and (min-width : 1224px) {
+    .images2 {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .images2 > div {
+        width: 32%;
+        display: flex;
+        flex-direction: column;
+        
+    
+    }
 }
