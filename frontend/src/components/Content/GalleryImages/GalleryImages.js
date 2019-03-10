@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import GalleryImage from './GalleryImage/GalleryImage';
 import styles from './GalleryImages.module.css';
+import Modal from 'react-responsive-modal';
 
 
 class GalleryImages extends Component {
@@ -8,28 +9,28 @@ class GalleryImages extends Component {
      baseImageURL = "https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/photographs%2F";
      queryString =  "?alt=media";
 
-    // TODO: Try cleaning the code up. By fetching the images height. etc. first async
-    // And then just from there  always filter by cross referencing one list with id,height & width VS the photolist
-    // So you don't have to make async requests every time which is stupid.
-
-    
-     componentDidMount() {
-        this.listImages();
+     state = {
+         imageModalOpen : false,
+         imageModalContent : null,
+         imageModalContentOrientation : "portrait",
      }
 
-     componentDidUpdate() {
-        if(!this.props.photoList && !this.props.error) {
-            this.listImages();
+    clickImageOpenHandler = (id,fileType,imageOrientation) => {
+
+        let imageClass = styles.modalImagePortrait;
+
+        if(imageOrientation === "landscape" || imageOrientation === "bigLandscape") {
+            imageClass = styles.modalImageLandscape
         }
-     }
 
+        const image = <img className={imageClass} src={this.baseImageURL + id + "." + fileType + this.queryString} alt="Modal" />
+        this.setState({imageModalContent : image, imageModalOpen : true, imageModalContentOrientation : imageOrientation})
+    }
+
+    clickImageCloseHandler = () => {
+            this.setState({imageModalOpen : false})
+    }
      
-    async asyncForEach(array, callback) {
-        for (let index = 0; index < array.length; index++) {
-          await callback(array[index], index, array);
-        }
-      }
-    
     listImages() {
 
         let imageList;
@@ -74,17 +75,17 @@ class GalleryImages extends Component {
 
                 groupHeight[smallest] += compareHeight;
 
-                console.log(smallest);
-                console.log(groupHeight);
-
                 groups[smallest].push(
                     <GalleryImage 
-                    key={photo.id}
-                    baseURL={this.baseImageURL}
-                    queryString={this.queryString}
-                    id={photo.id}
-                    fileType={photo.fileType}
-                    index={i}
+                        key={photo.id}
+                        height={photo.height}
+                        width={photo.width}
+                        baseURL={this.baseImageURL}
+                        queryString={this.queryString}
+                        id={photo.id}
+                        fileType={photo.fileType}
+                        index={i}
+                        clickHandler={(id,fileType,orientation) => this.clickImageOpenHandler(id,fileType,orientation)}
                 />)
 
                 
@@ -115,11 +116,33 @@ class GalleryImages extends Component {
     render() {
 
         let listImages = this.listImages();
+        let modalContent = this.state.imageModalContent;
+
+        let modalOrientation =  styles.modalContentPortrait;
+
+        if(this.state.imageModalContentOrientation === "bigLandscape") {
+            modalOrientation = styles.modalContentBigLandscape
+        }   
+        else  if(this.state.imageModalContentOrientation === "landscape") {
+            modalOrientation = styles.modalContentLandscape
+        }   
 
         return (
-            <div className={styles.images2}>
-             {listImages}
-            </div>
+            <>
+                <div className={styles.images2}>
+                    {listImages}
+                </div>
+
+                <Modal 
+                    open={this.state.imageModalOpen}
+                    onClose={this.clickImageCloseHandler}
+                    classNames={{
+                        closeButton : styles.modalCloseButton,
+                        modal : modalOrientation
+                    }}> 
+                    {modalContent}
+                </Modal>
+            </>
         );
     }
 

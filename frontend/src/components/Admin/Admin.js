@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import styles from './Admin.module.css';
 
-
 import Modal from 'react-responsive-modal';
-import Overlay from '../UI/Overlay/Overlay';
 
 import Button from '../UI/Button/Button';
 import ButtonSpecial from '../UI/Button/ButtonSpecial';
