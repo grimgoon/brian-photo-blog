@@ -2,4 +2,33 @@
     background-color: #5eadc5;
     height: 170px;
     margin-top: 40px;
+    color: #227b94;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
+
+.email {
+    font-weight: 600;
+    font-size: 24px;
+    text-transform: uppercase;
+    padding: 0px 4px 8px 4px;
+    border-bottom: 2px solid #227b94;
+
+}
+
+.rights {
+margin-top: 6px;
+font-size: 18px;
+text-transform: uppercase;
+}
+
+.credits {
+
+}
+
+.credits a {
+    color: #403d49 
+}
+
