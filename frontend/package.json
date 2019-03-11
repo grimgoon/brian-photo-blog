@@ -13,6 +13,7 @@
     "node-sass": "^4.11.0",
     "npm": "^6.7.0",
     "react": "^16.8.1",
+    "react-device-detect": "^1.6.2",
     "react-dom": "^16.8.1",
     "react-firebaseui": "^3.1.2",
     "react-lazyload": "^2.5.0",
