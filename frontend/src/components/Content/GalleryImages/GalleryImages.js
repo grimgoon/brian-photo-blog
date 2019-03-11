@@ -79,7 +79,7 @@ class GalleryImages extends Component {
                 groupHeight[smallest] += compareHeight;
 
                 groups[smallest].push(
-                    <GalleryImage 
+                    <GalleryImage
                         key={photo.id}
                         height={photo.height}
                         width={photo.width}

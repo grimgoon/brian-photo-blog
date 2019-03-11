@@ -1,4 +1,6 @@
 import React from 'react';
+import LazyLoading from 'react-lazyload'
+
 
 const GalleryImage = (props) => {
 
@@ -13,13 +15,21 @@ const GalleryImage = (props) => {
         }
     }
 
-    return(
-            <img
-                onClick={() => props.clickHandler(props.id,props.fileType,orientation)}
-                src={props.baseURL + props.id + "." + props.fileType + props.queryString}
-                alt={props.index} />
+    let image = <img
+        onClick={() => props.clickHandler(props.id,props.fileType,orientation)}
+        src={props.baseURL + props.id + "." + props.fileType + props.queryString}
+        alt={props.index} />  
 
-    )
+    if(props.index >= 10){
+        return(
+            <LazyLoading offset={200}>
+                {image}
+            </LazyLoading>
+        )
+    }
+    else {
+        return image
+    }
 }
 
 
