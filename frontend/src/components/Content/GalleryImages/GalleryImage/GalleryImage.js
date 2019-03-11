@@ -22,7 +22,7 @@ const GalleryImage = (props) => {
 
     if(props.index >= 10){
         return(
-            <LazyLoading offset={400}>
+            <LazyLoading once offset={400}>
                 {image}
             </LazyLoading>
         )
