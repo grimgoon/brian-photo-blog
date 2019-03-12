@@ -18,11 +18,12 @@ const GalleryImage = (props) => {
     let image = <img
         onClick={() => props.clickHandler(props.id,props.fileType,orientation)}
         src={props.baseURL + props.id + "." + props.fileType + props.queryString}
-        alt={props.index} />  
+        alt={props.index}
+        onLoad={props.imageHandler}/>  
 
-    if(props.index >= 10){
+    if(props.index >= props.imageCountCap){
         return(
-            <LazyLoading once offset={400}>
+            <LazyLoading once offset={800}>
                 {image}
             </LazyLoading>
         )

@@ -89,7 +89,6 @@
 
   .mobileLinkContainer {
     background-color: #5eadc5;
-  
   }
   
   .mobileMenuButton {
@@ -111,7 +110,6 @@
   height: 40px;
   width: 40px;
   margin-left: 10px;
-
 }
 
 .mobileMenuContent {
@@ -123,7 +121,6 @@
   display: flex;
   background-color: #5eadc5;
   flex-direction: column;
-  
 }
 
 
@@ -139,12 +136,7 @@
   color: #227b94;
   font-weight: 400;
   display: block;
-
 }
-
-
-
-
 
 /* Smaller Screens */
 @media only screen  and (min-width : 768px) {
@@ -157,16 +149,14 @@
     }
 }
 
-
 /* Desktops & Laptops */
 @media only screen  and (min-width : 1224px) {
 
-        .linkContainer {
-            margin-top: 74px;
-        }
-
-        .link,.dropbtn {
-            font-size: 1.8vw;
-        }
+    .linkContainer {
+        margin-top: 74px;
     }
 
+    .link,.dropbtn {
+        font-size: 1.8vw;
+    }
+}

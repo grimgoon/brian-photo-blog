@@ -80,6 +80,8 @@ class GalleryImages extends Component {
 
                 groups[smallest].push(
                     <GalleryImage
+                        imageCountCap={this.props.imageCountCap}
+                        imageHandler={this.props.imageHandler}
                         key={photo.id}
                         height={photo.height}
                         width={photo.width}
