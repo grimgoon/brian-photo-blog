@@ -10,6 +10,9 @@ import GalleryImages from './GalleryImages/GalleryImages';
 
 class Content extends Component {
 
+    imageCount = 0;
+    imageCountCap = 10;
+
     state = {
         errorMessage : false,
         categories: null,
@@ -22,10 +25,12 @@ class Content extends Component {
     componentDidMount() {
         this.getCategories();
         this.getPhotographList();
-        console.log("Did Mount");
         this.isLoading();
     }
 
+    imageLoadHandler = () => {
+        this.imageCount++;
+    }
     
     isLoading = () => {
 
@@ -33,11 +38,13 @@ class Content extends Component {
         
         let loading = setInterval(() => {
 
+            console.log(this.imageCount)
+
             if(i > 10) {
                 this.setState({isLoadingMessage : "An error occured. Please try again later."});
                 clearInterval(loading);
             }
-            else if(this.state.photographList && this.state.categories) {
+            else if(this.state.photographList && this.state.categories && this.imageCount >= this.imageCountCap) {
                 clearInterval(loading);
                 this.setState({isLoading : false})
             }
@@ -123,10 +130,10 @@ class Content extends Component {
 
     setRoute2 = () => {
         if(this.state.categories) {
-            let routes = [<Route key={0} exact path="/" render={() => <GalleryImages error={this.state.errorMessage} photoList={this.state.photographList} getList={this.getPhotographList} filter="all"></GalleryImages>}/>];
+            let routes = [<Route key={0} exact path="/" render={() => <GalleryImages imageCountCap={this.imageCountCap} imageHandler={this.imageLoadHandler} error={this.state.errorMessage} photoList={this.state.photographList} getList={this.getPhotographList} filter="all"></GalleryImages>}/>];
             for(let key in this.state.categories) {
                 let categoryId = this.state.categories[key].id;
-                routes.push(<Route key={key+1} exact path={"/category/" + categoryId} render={() => <GalleryImages error={this.state.errorMessage} photoList={this.state.photographList} getList={this.getPhotographList} filter={categoryId}></GalleryImages>}/>);
+                routes.push(<Route key={key+1} exact path={"/category/" + categoryId} render={() => <GalleryImages imageCountCap={this.imageCountCap} imageHandler={this.imageLoadHandler} error={this.state.errorMessage} photoList={this.state.photographList} getList={this.getPhotographList} filter={categoryId}></GalleryImages>}/>);
             }
 
             let returnRoutes = <>{routes.map((route) => (route))}</>

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import GalleryImage from './GalleryImage/GalleryImage';
 import styles from './GalleryImages.module.css';
 import Modal from 'react-responsive-modal';
+import {isMobile} from "react-device-detect";
 
 
 class GalleryImages extends Component {
@@ -17,14 +18,16 @@ class GalleryImages extends Component {
 
     clickImageOpenHandler = (id,fileType,imageOrientation) => {
 
-        let imageClass = styles.modalImagePortrait;
+        if(!isMobile) {
+            let imageClass = styles.modalImagePortrait;
 
-        if(imageOrientation === "landscape" || imageOrientation === "bigLandscape") {
-            imageClass = styles.modalImageLandscape
+            if(imageOrientation === "landscape" || imageOrientation === "bigLandscape") {
+                imageClass = styles.modalImageLandscape
+            }
+    
+            const image = <img className={imageClass} src={this.baseImageURL + id + "." + fileType + this.queryString} alt="Modal" />
+            this.setState({imageModalContent : image, imageModalOpen : true, imageModalContentOrientation : imageOrientation})
         }
-
-        const image = <img className={imageClass} src={this.baseImageURL + id + "." + fileType + this.queryString} alt="Modal" />
-        this.setState({imageModalContent : image, imageModalOpen : true, imageModalContentOrientation : imageOrientation})
     }
 
     clickImageCloseHandler = () => {
@@ -76,7 +79,9 @@ class GalleryImages extends Component {
                 groupHeight[smallest] += compareHeight;
 
                 groups[smallest].push(
-                    <GalleryImage 
+                    <GalleryImage
+                        imageCountCap={this.props.imageCountCap}
+                        imageHandler={this.props.imageHandler}
                         key={photo.id}
                         height={photo.height}
                         width={photo.width}

@@ -7,7 +7,8 @@ class NavLinks extends Component {
 
     state = {
         categories: [],
-        dropdownLength : 3
+        dropdownLength : 3,
+        isMobileMenuOpen : false,
     };
 
     componentDidMount() {
@@ -68,7 +69,9 @@ class NavLinks extends Component {
 
 
     createMobileLinks = () => {
-        return this.state.categories.map((mapCategory) => (
+
+        const navlinks = this.state.categories.map((mapCategory) => (
+            <div onClick={this.mobileToggleHandler}>
             <NavLink 
                 key={mapCategory.id}
                 exact
@@ -77,13 +80,35 @@ class NavLinks extends Component {
                 to={"/category/" + mapCategory.id}>
                 {mapCategory.value}
             </NavLink>
+            </div>
         ));
+
+         let isMenuOpen = this.state.isMobileMenuOpen ? "flex" : "none"; 
+
+        const dropdownContent =
+            <>
+                <div onClick={this.mobileToggleHandler} className={styles.mobileMenuButton}>
+                    <img src="https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/Assets%2Fmenu.png?alt=media&token=eb1d6c10-21c1-4f61-950f-bcdba5d79c15" alt="Menu Navigation Icon"/>
+                </div>
+                <div className={styles.mobileMenuContent} style={{display : isMenuOpen}}>
+                    <div onClick={this.mobileToggleHandler}><NavLink exact className={styles.mobileLink} activeClassName={styles.active} to="/">Home</NavLink></div>
+                    {navlinks}
+                </div>
+            </>
+        
+        return dropdownContent;
+    }
+
+    mobileToggleHandler = () => {
+        this.setState((prevState,props) => {
+            return {isMobileMenuOpen : !prevState.isMobileMenuOpen}
+        })
     }
 
     render () {
 
         const desktopLinks = this.createDesktopLinks();
-        const mobileLinks = this.createDesktopLinks();
+        const mobileLinks = this.createMobileLinks();
 
         const isDropdown = this.state.categories.length > this.state.dropdownLength;
 
@@ -100,7 +125,6 @@ class NavLinks extends Component {
                 </div>
     
                 <div className={styles.mobileLinkContainer}>
-                    <NavLink exact className={styles.mobileLink} activeClassName={styles.active} to="/">Home</NavLink>
                     {mobileLinks}
                 </div>
             </>

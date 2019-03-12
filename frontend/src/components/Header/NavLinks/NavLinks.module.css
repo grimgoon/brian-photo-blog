@@ -14,6 +14,12 @@
     text-decoration: none;
 }
 
+.mobileLink {
+  color: #403d49;
+  text-decoration: none;
+
+}
+
 .link:hover {
     color: #227b94;
 }
@@ -21,24 +27,6 @@
 .active {
     text-decoration: underline;
     text-decoration-color: #403d49;
-}
-
-.mobileLinkContainer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 100;
-    background-color: #5eadc5;
-    width: 100%;
-    height: 26px;
-    display: flex;
-    justify-content: space-evenly;
-}
-
-.mobileLink {
-    color: #403d49;
-    text-decoration: none;
-
 }
 
 /* Style The Dropdown Button */
@@ -97,6 +85,58 @@
     color: #227b94;
   }
 
+  /* MOBILE MENU*/
+
+  .mobileLinkContainer {
+    background-color: #5eadc5;
+  }
+  
+  .mobileMenuButton {
+    background-color: #5eadc5;
+    cursor: pointer;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: baseline;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    border-bottom: 2px solid #227b94;
+  }
+  
+.mobileMenuButton img {
+  height: 40px;
+  width: 40px;
+  margin-left: 10px;
+}
+
+.mobileMenuContent {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  height: auto;
+  width: 100%;
+  display: flex;
+  background-color: #5eadc5;
+  flex-direction: column;
+}
+
+
+.mobileMenuContent div {
+  list-style-type: none;
+}
+
+
+.mobileMenuContent a {
+  padding: 10px 0px 10px 10px;
+  font-size: 20px;
+  text-transform: uppercase;
+  color: #227b94;
+  font-weight: 400;
+  display: block;
+}
 
 /* Smaller Screens */
 @media only screen  and (min-width : 768px) {
@@ -109,16 +149,14 @@
     }
 }
 
-
 /* Desktops & Laptops */
 @media only screen  and (min-width : 1224px) {
 
-        .linkContainer {
-            margin-top: 74px;
-        }
-
-        .link,.dropbtn {
-            font-size: 1.8vw;
-        }
+    .linkContainer {
+        margin-top: 74px;
     }
 
+    .link,.dropbtn {
+        font-size: 1.8vw;
+    }
+}
