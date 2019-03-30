@@ -5,11 +5,21 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {BrowserRouter} from 'react-router-dom';
 
+// Redux
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
+import rootReducer from '../src/utils/Redux/reducers/reducer';
+
+
+const store = createStore(rootReducer)
 
 const app = (
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>
+    <Provider store={store}>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    </Provider>
+
 );
 
 
