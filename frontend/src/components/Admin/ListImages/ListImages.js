@@ -1,11 +1,14 @@
 import React from 'react'; 
 import styles from './ListImages.module.scss';
 import LazyLoad from 'react-lazyload';
+import cloudinary from 'cloudinary-core';
 
 const ListImages = (props) => {
 
     // TODO: Make this text prettier if no images were found or pass to the errorMessage state
     let List = "";
+
+    const cloudinaryCore = new cloudinary.Cloudinary({cloud_name: 'grimgoon'});
 
     // TODO: Outsource to Redux
     const baseImageURL = "https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/photographs%2F";
@@ -29,7 +32,7 @@ const ListImages = (props) => {
                             <img 
                                 className={styles.listItemThumbnail}
                                 alt={listItem.id}
-                                src={baseImageURL + listItem.id + "." + listItem.fileType + queryString}
+                                src={cloudinaryCore.url(listItem.id)}
                             />
                             <span className={styles.categories}>
                                 <b>Categories: </b>{Object.values(listItem.categories).map(category => category + ', ')}

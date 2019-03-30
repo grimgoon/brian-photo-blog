@@ -2,19 +2,22 @@ import React, {Component} from 'react';
 import styles from './Admin.module.css';
 
 import Modal from 'react-responsive-modal';
+import Button from '../../utils/UI/Button/Button';
+import ButtonSpecial from '../../utils/UI/Button/ButtonSpecial';
 
-import Button from '../UI/Button/Button';
-import ButtonSpecial from '../UI/Button/ButtonSpecial';
 import ListImages from './ListImages/ListImages';
 import ImagesNotification from './UploadingImagesStatusNotification/UploadingImagesStatusNotification';
 import CategorySettings from './CategorySettings/CategorySettings';
 import EditCategory from './EditCategory/EditCategory.js'
 
+
+import axios from 'axios';
+
 import Firebase from 'firebase/app';
 import 'firebase/storage';
 import 'firebase/database';
 import 'firebase/auth';
-import FirebaseConfig from '../Firebase/Config/Config';
+import FirebaseConfig from '../../utils/Firebase/Config/Config';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 class Admin extends Component {
@@ -136,7 +139,15 @@ class Admin extends Component {
             let fileReference = folderReference + file.name;
             let imageReference = storageRef.child(fileReference);
 
-                imageReference.put(file).then((snapshot) => {
+                const instance = axios.create({
+                    baseURL : "https://api.cloudinary.com/v1_1/grimgoon/upload"
+                });
+
+                const formData = new FormData;
+                formData.append("image", file);
+
+                // imageReference.put(file).then((snapshot) => {
+                    instance.post('/orders.json', formData, {headers : {'Content-Type': 'multipart/form-data'}}).then(respone => {
 
                     console.log(file);
 

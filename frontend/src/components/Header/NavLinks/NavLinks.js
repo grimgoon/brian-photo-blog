@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {NavLink} from 'react-router-dom';
 import styles from './NavLinks.module.css';
-import axios from '../../Firebase/Database/Database';
+import axios from '../../../utils/Firebase/Database/Database';
 
 class NavLinks extends Component {
 

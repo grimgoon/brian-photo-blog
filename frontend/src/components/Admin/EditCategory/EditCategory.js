@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import styles from './EditCategory.module.css';
-import Button from '../../UI/Button/Button';
+import Button from '../../../utils/UI/Button/Button';
 
 class EditCategory extends Component {
 

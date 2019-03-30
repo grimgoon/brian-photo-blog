@@ -1,8 +1,12 @@
 import React from 'react';
 import LazyLoading from 'react-lazyload'
+import cloudinary from 'cloudinary-core';
+
 
 
 const GalleryImage = (props) => {
+
+    const cloudinaryCore = new cloudinary.Cloudinary({cloud_name: 'grimgoon'});
 
     let orientation = "portrait";
 
@@ -17,7 +21,7 @@ const GalleryImage = (props) => {
 
     let image = <img
         onClick={() => props.clickHandler(props.id,props.fileType,orientation)}
-        src={props.baseURL + props.id + "." + props.fileType + props.queryString}
+        src={cloudinaryCore.url(props.id)}
         alt={props.index}
         onLoad={props.imageHandler}/>  
 

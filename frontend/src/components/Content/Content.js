@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Route} from 'react-router-dom';
-import axios from  '../Firebase/Database/Database';
+import axios from  '../../utils/Firebase/Database/Database';
 
 import LoadingScreen from 'react-loading-screen';
 

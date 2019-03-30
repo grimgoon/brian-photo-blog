@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './UploadingImagesStatusNotification.module.css';
-import Button from '../../UI/Button/Button';
+import Button from '../../../utils/UI/Button/Button';
 
 const UploadingImagesStatusNotification = (props) => {
 
