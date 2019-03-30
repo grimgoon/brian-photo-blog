@@ -4,14 +4,12 @@ import styles from './Admin.module.css';
 import Modal from 'react-responsive-modal';
 import Button from '../../utils/UI/Button/Button';
 import ButtonSpecial from '../../utils/UI/Button/ButtonSpecial';
+import slugifyString from '../../utils/slugifyString';
 
 import ListImages from './ListImages/ListImages';
 import ImagesNotification from './UploadingImagesStatusNotification/UploadingImagesStatusNotification';
 import CategorySettings from './CategorySettings/CategorySettings';
 import EditCategory from './EditCategory/EditCategory.js'
-
-
-import axios from 'axios';
 
 import Firebase from 'firebase/app';
 import 'firebase/storage';
@@ -19,6 +17,8 @@ import 'firebase/database';
 import 'firebase/auth';
 import FirebaseConfig from '../../utils/Firebase/Config/Config';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+
+
 
 class Admin extends Component {
 
@@ -95,16 +95,13 @@ class Admin extends Component {
         }, 1500)
     }
 
-
     uploadImage = (event) => {
 
         const files = Array.from(event.target.files);
-
         const folderReference = this.state.folderReference;
-
         const storageRef  = Firebase.storage().ref();
-        const database = Firebase.database();
-
+    
+    
         let uploadingImages = files.map((file,i) => {
             return {
                 name : file.name,
@@ -112,20 +109,20 @@ class Admin extends Component {
                 errorMessage : null,
             }    
         });
-
+    
         this.setState({disableButtons : true, uploadingImages : uploadingImages})
-
+    
         let updateOrderCounter = 0;
-
+    
         files.forEach((file, i) => {
-
+    
             let fileData = file.name.split('.');
             let imageName = fileData[0];
             let fileType = fileData[fileData.length -1];
-
+    
             if(fileData.length > 2) {
                 this.updateItemUploadingImageList(file.name,'error','Image Name can\'t contain "."');
-
+    
                 return;
             }
             else if (file.type !== "image/jpeg" && file.type !== "image/png") {
@@ -135,27 +132,21 @@ class Admin extends Component {
             else {
                 updateOrderCounter++;    
             }
-
+    
             let fileReference = folderReference + file.name;
             let imageReference = storageRef.child(fileReference);
-
-                const instance = axios.create({
-                    baseURL : "https://api.cloudinary.com/v1_1/grimgoon/upload"
-                });
-
-                const formData = new FormData;
-                formData.append("image", file);
-
-                // imageReference.put(file).then((snapshot) => {
-                    instance.post('/orders.json', formData, {headers : {'Content-Type': 'multipart/form-data'}}).then(respone => {
-
+    
+    
+                imageReference.put(file).then((snapshot) => {
+                    
+    
                     console.log(file);
-
+    
                     let image = new Image();
                     image.src = this.baseImageURL + imageName + "." + fileType + this.queryString;
         
                     image.onload = () => {
-
+    
                         Firebase.database().ref(folderReference).child(imageName).set({
                             fileType : fileType,
                             date : Date.now(),
@@ -166,19 +157,21 @@ class Admin extends Component {
                             order: i,
                             height: image.height,
                             width: image.width,
-
+    
                         }).then(() => {
                             this.updateItemUploadingImageList(file.name,"uploaded");
                         });
                     }
                 }).catch((error) => {
                     // Error to upload file 
-                });
-            
+                }); 
         });
-
+    
         this.updateOrderGroup(updateOrderCounter);
     }
+
+
+   
 
     updateItemUploadingImageList = (name,status,errorMessage) => {
 
@@ -402,7 +395,7 @@ class Admin extends Component {
             // Error
         }
         else {
-            const keyValue = this.slugifyString(categoryName);
+            const keyValue = slugifyString(categoryName);
 
             Firebase.database().ref('categories').child(keyValue).set(categoryName).then(result => {
                 this.setState({addCategoryName : ""});
@@ -470,23 +463,6 @@ class Admin extends Component {
        
 
 
-    }
-
-
-    slugifyString = (string) => {
-
-        const a = 'àáäâãåăæçèéëêǵḧìíïîḿńǹñòóöôœṕŕßśșțùúüûǘẃẍÿź·/_,:;'
-        const b = 'aaaaaaaaceeeeghiiiimnnnoooooprssstuuuuuwxyz------'
-        const p = new RegExp(a.split('').join('|'), 'g');
-
-        return string.toString().toLowerCase()
-        .replace(/\s+/g, '-') // Replace spaces with -
-        .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
-        .replace(/&/g, '-and-') // Replace & with ‘and’
-        .replace(/[^\w\-]+/g, '') // Remove all non-word characters
-        .replace(/\-\-+/g, '-') // Replace multiple - with single -
-        .replace(/^-+/, '') // Trim - from start of text
-        .replace(/-+$/, '') // Trim - from end of text
     }
 
     editCategoryClickHandler = () => {

@@ -1,14 +1,12 @@
 import React from 'react';
 import LazyLoading from 'react-lazyload'
-import cloudinary from 'cloudinary-core';
-
-
 
 const GalleryImage = (props) => {
 
-    const cloudinaryCore = new cloudinary.Cloudinary({cloud_name: 'grimgoon'});
-
     let orientation = "portrait";
+    // TODO: Outsource to Redux
+    const baseImageURL = "https://firebasestorage.googleapis.com/v0/b/foto-25c4c.appspot.com/o/photographs%2F";
+    const queryString =  "?alt=media";
 
     if(props.width > props.height) {
 
@@ -21,7 +19,7 @@ const GalleryImage = (props) => {
 
     let image = <img
         onClick={() => props.clickHandler(props.id,props.fileType,orientation)}
-        src={cloudinaryCore.url(props.id)}
+        src={baseImageURL + props.id + '.' + props.fileType + queryString}
         alt={props.index}
         onLoad={props.imageHandler}/>  
 

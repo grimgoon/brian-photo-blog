@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
 import {Route} from 'react-router-dom';
+
+// Redux
+import * as actionTypes from '../../utils/Redux/actions/actions';
+import {connect} from 'react-redux';
+
+
 import axios from  '../../utils/Firebase/Database/Database';
 
 import LoadingScreen from 'react-loading-screen';
@@ -26,6 +32,8 @@ class Content extends Component {
         this.getCategories();
         this.getPhotographList();
         this.isLoading();
+
+        console.log(this.props.categoryList);
     }
 
     imageLoadHandler = () => {
@@ -164,4 +172,19 @@ class Content extends Component {
     }
 }
 
-export default Content;
+const mapStateToProps = state => {
+    return {
+        blah : state.photographList
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchPhotographList : () => dispatch({type : actionTypes.FETCH_PHOTOGRAPH_LIST, payload : {}}),
+        fetchCategoryList : () => dispatch({type : actionTypes.FETCH_CATEGORY_LIST, payload : {}}),
+        updatePhotographList : () => dispatch({type : actionTypes.UPDATE_PHOTOGRAPH_LIST, payload : {}}),
+        updateCategoryList : () => dispatch({type : actionTypes.UPDATE_PHOTOGRAPH_LIST, payload : {}}),
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Content);
