@@ -32,12 +32,11 @@ class Content extends Component {
         this.getCategories();
         this.getPhotographList();
         this.isLoading();
-
-        console.log(this.props.categoryList);
     }
 
     imageLoadHandler = () => {
         this.imageCount++;
+        console.log(1)
     }
     
     isLoading = () => {

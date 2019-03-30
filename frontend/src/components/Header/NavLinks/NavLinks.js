@@ -70,8 +70,8 @@ class NavLinks extends Component {
 
     createMobileLinks = () => {
 
-        const navlinks = this.state.categories.map((mapCategory) => (
-            <div onClick={this.mobileToggleHandler}>
+        const navlinks = this.state.categories.map((mapCategory,i) => (
+            <div key={i} onClick={this.mobileToggleHandler}>
             <NavLink 
                 key={mapCategory.id}
                 exact
