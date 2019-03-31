@@ -12,10 +12,11 @@
 /build
 
 #config
-/src/utils/Firebase/Config/Config.js
+
 
 # misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
