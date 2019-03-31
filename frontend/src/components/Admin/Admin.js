@@ -220,53 +220,6 @@ class Admin extends Component {
         }
     }
 
-    getImageList = () => {
-
-        const database = Firebase.database();
-
-        // TODO: Error Handling
-        database.ref('photographs').on('value',(snapshot) => {
-            let images = [];
-            let values = snapshot.val();
-
-            for(let key in  values) {
-                images.push({
-                    id: key,
-                    ...values[key]
-                });
-            }
-
-            images = images.sort((a, b) => (a.order) > b.order ? 1 : -1);
-
-            this.setState({imageList : images});
-        })
-    }
-
-    getCategoryList = () => {
-
-        const database = Firebase.database();
-
-        // TODO: Error Handling
-        database.ref('categories').on('value',(snapshot) => {
-
-            let categories = [];
-            let values = snapshot.val();
-
-            for(let key in values) {
-
-                categories.push({
-                    id: key,
-                    name : values[key],
-                    status : null
-                });
-            }
-
-            categories = categories.sort((a, b) => a > b ? 1 : -1);
-
-            this.setState({categoryList : categories});
-        })
-    }
-
     checkboxHandler = (event) => {
 
         const imageId = event.target.id;

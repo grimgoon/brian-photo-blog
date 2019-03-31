@@ -11,12 +11,12 @@ const reducer = (state = initialState, action) => {
         case actionTypes.UPDATE_PHOTOGRAPH_LIST :
         return {
             ...state,
-            photographList : null,
+            photographList : action.payload.photographList
         }
         case actionTypes.UPDATE_CATEGORY_LIST :
         return {
             ...state,
-            categoryList : null,
+            categoryList : action.payload.categoryList,
         }
         default : 
             return {
