@@ -9,8 +9,8 @@ _____
 _________
 
 Refactoring left:
-- Slim down and break out components to smaller ones further.
-- Look into which components can be turned into PureComponents / Not always re-render on updates.
+- Slim down and break out components further to smaller ones .
+- Look into which components can be turned into PureComponents / Not always need to re-render on updates.
 - Move out all  AJAX requests from components to the utility folder, as the testing phase of different libraries is done.
 - Complete all the Redux ActionCreators and Dispatchers.
 - Create a better HOC Error Handling system that is displayed to the user, and start logging errors.
