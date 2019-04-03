@@ -115,9 +115,6 @@ class GalleryImages extends Component {
     }
 
     render() {
-
-        console.log("meep");
-
         let listImages = this.listImages();
         let modalContent = this.state.imageModalContent;
 

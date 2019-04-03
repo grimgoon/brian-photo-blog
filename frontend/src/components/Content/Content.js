@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import {Route} from 'react-router-dom';
 
 // Redux
-import * as actionTypes from '../../utils/Redux/actions/actions';
+import * as actionCreators from '../../utils/store/actions/actions';
 import {connect} from 'react-redux';
 
-import * as requests from '../../utils/Firebase/Requests/requests'; 
 
 import LoadingScreen from 'react-loading-screen';
 
@@ -28,20 +27,16 @@ class Content extends Component {
 
     componentDidMount() {
         
-        this.getPhotographs();
-        this.getCategory();
+        this.props.fetchPhotographList();
+        this.props.fetchCategoryList();
+        // this.getCategory();
         this.isLoading();
     }
 
-    getPhotographs = async () => {
-            const requestPhotos = await requests.getPhotographList();
-            this.props.updatePhotographList(requestPhotos);
-    }
-
-    getCategory = async () => {
-        const requestCategories = await requests.getCategoryList();
-        this.props.updateCategoryList(requestCategories);
-}
+//     getCategory = async () => {
+//         const requestCategories = await requests.getCategoryList();
+//         this.props.updateCategoryList(requestCategories);
+// }
 
     imageLoadHandler = () => {
         this.imageCount++;
@@ -139,9 +134,7 @@ class Content extends Component {
 
     render() {
         let routes = this.setRoute2();
-
-        console.log(this.props.categoryList);
-
+        
         return (
             <>  
                 <LoadingScreen 
@@ -168,8 +161,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        updatePhotographList : (photographList) => dispatch({type : actionTypes.UPDATE_PHOTOGRAPH_LIST, payload : {photographList}}),
-        updateCategoryList : (categoryList) => dispatch({type : actionTypes.UPDATE_CATEGORY_LIST, payload : {categoryList}}),
+        fetchPhotographList : () => dispatch(actionCreators.fetchPhotographs()),
+        fetchCategoryList : () => dispatch(actionCreators.fetchCategories()),
+        // updatePhotographList : (photographList) => dispatch({type : actionCreators.UPDATE_PHOTOGRAPH_LIST, payload : {photographList}}),
+        // updateCategoryList : (categoryList) => dispatch({type : actionCreators.UPDATE_CATEGORY_LIST, payload : {categoryList}}),
     }
 }
 

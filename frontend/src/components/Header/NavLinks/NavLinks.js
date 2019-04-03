@@ -1,51 +1,32 @@
 import React, {Component} from 'react';
 import {NavLink} from 'react-router-dom';
+import {connect} from 'react-redux';
+
 import styles from './NavLinks.module.css';
-import axios from '../../../utils/Firebase/Database/Database';
 
 class NavLinks extends Component {
 
     state = {
-        categories: [],
         dropdownLength : 3,
         isMobileMenuOpen : false,
     };
 
     componentDidMount() {
-        this.getCategories();
-
     }
 
-    getCategories = () => {
-
-        axios.get('/categories.json')
-        .then(res => {
-            let categoryLinks = [];
-            for(let key in  res.data) {
-                categoryLinks.push({
-                    id: key,
-                    value : res.data[key]
-                });
-            }
-            this.setState({categories : categoryLinks});
-        }).catch(err => {
-            // Fix Error Handling
-        });
-
-        
-    }
-    
     createDesktopLinks = () => {
 
-        const categories = this.state.categories;
+        console.log("hah!")
+
+        const categories = this.props.categories;
         const navlinks = categories.map((mapCategory) => (
             <NavLink 
                 key={mapCategory.id}
                 exact
                 className={styles.link} 
-                activeClassName={styles.active} 
+                activeClassName={styles.active}
                 to={"/category/" + mapCategory.id}>
-                {mapCategory.value}
+                {mapCategory.name}
             </NavLink>
         ));   
 
@@ -70,7 +51,7 @@ class NavLinks extends Component {
 
     createMobileLinks = () => {
 
-        const navlinks = this.state.categories.map((mapCategory,i) => (
+        const navlinks = this.props.categories.map((mapCategory,i) => (
             <div key={i} onClick={this.mobileToggleHandler}>
             <NavLink 
                 key={mapCategory.id}
@@ -78,7 +59,7 @@ class NavLinks extends Component {
                 className={styles.mobileLink}
                 activeClassName={styles.active}
                 to={"/category/" + mapCategory.id}>
-                {mapCategory.value}
+                {mapCategory.name}
             </NavLink>
             </div>
         ));
@@ -107,13 +88,17 @@ class NavLinks extends Component {
 
     render () {
 
-        const desktopLinks = this.createDesktopLinks();
-        const mobileLinks = this.createMobileLinks();
+       
 
-        const isDropdown = this.state.categories.length > this.state.dropdownLength;
+        const desktopLinks = this.props.categories ? this.createDesktopLinks() : null;
+        const mobileLinks =  this.props.categories ? this.createMobileLinks() : null;
+
+        const isDropdown =  this.props.categories ? this.props.categories.length > this.state.dropdownLength : false;
 
         const containerJustify = isDropdown ? "flex-start" : "space-evenly"
         const homeMargin = isDropdown ? "10%" : "0px";
+
+        console.log(desktopLinks);
 
         return (
             <>
@@ -135,4 +120,9 @@ class NavLinks extends Component {
 
 }
 
-export default NavLinks;
+const mapStateToProps = state => ({
+    categories : state.categoryList
+})
+
+
+export default connect(mapStateToProps)(NavLinks);
