@@ -117,8 +117,6 @@ class Content extends Component {
                 />
             ];
             
-            
-            
             for(let key in this.props.categoryList) {
                 let categoryId = this.props.categoryList[key].id;
                 routes.push(<Route key={key+1} exact path={"/category/" + categoryId} render={() => <GalleryImages imageCountCap={this.imageCountCap} imageHandler={this.imageLoadHandler} error={this.state.errorMessage} photoList={this.props.photographList} getList={this.getPhotographList} filter={categoryId}></GalleryImages>}/>);

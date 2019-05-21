@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
 import styles from './Admin.module.css';
 
+// Redux
+import * as actionCreators from '../../utils/store/actions/actions';
+import {connect} from 'react-redux';
+
 import Modal from 'react-responsive-modal';
 import Button from '../../utils/UI/Button/Button';
 import ButtonSpecial from '../../utils/UI/Button/ButtonSpecial';
@@ -15,7 +19,6 @@ import Firebase from 'firebase/app';
 import 'firebase/storage';
 import 'firebase/database';
 import 'firebase/auth';
-import FirebaseConfig from '../../utils/Firebase/Config/Config';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 
@@ -24,8 +27,6 @@ class Admin extends Component {
 
     state = {
         uploadingImages: null,
-        imageList: null,
-        categoryList: null,
         folderReference : 'photographs/',
         checkedItemList : [],
         categorySettingsOpen : false,
@@ -43,11 +44,8 @@ class Admin extends Component {
     queryString =  "?alt=media";
 
      componentDidMount() {
-
-        Firebase.initializeApp(FirebaseConfig);
-        this.getImageList();
-        this.getCategoryList();
-
+        this.props.fetchPhotographList();
+        this.props.fetchCategoryList();
         this.isLoading();
     
         // Listen to the Firebase Auth state and set the local state.
@@ -85,7 +83,7 @@ class Admin extends Component {
                 this.setState({isLoadingMessage : "An error occured. Please try again later."});
                 clearInterval(loading);
             }
-            else if(this.state.imageList && this.state.categoryList) {
+            else if(this.props.photographList && this.props.categoryList) {
                 clearInterval(loading);
                 this.setState({isLoading : false})
             }
@@ -204,12 +202,12 @@ class Admin extends Component {
 
     updateOrderGroup = (newImageLength,groupName = "unset") => {
 
-        if(this.state.imageList && this.state.imageList.length >= 1) {
+        if(this.props.photographList && this.props.photographList.length >= 1) {
 
             const database = Firebase.database();
             const folderReference = this.state.folderReference;
 
-            let updateGroupArray = this.state.imageList.filter(image => image.group = groupName);
+            let updateGroupArray = this.props.photographList.filter(image => image.group = groupName);
 
             updateGroupArray.forEach((file, i) => {
 
@@ -271,7 +269,7 @@ class Admin extends Component {
         if(this.state.disableButtons) {
             isDisabled = true;    
         }
-        else if(!this.state.imageList || !this.state.categoryList) {
+        else if(!this.props.photographList || !this.props.categoryList) {
             isDisabled = true;       
         }
         else if (buttonType === "listItem" && this.state.checkedItemList.length === 0) {
@@ -289,7 +287,7 @@ class Admin extends Component {
     
     categorySettingsCloseHandler = () => {
 
-        let categories = [...this.state.categoryList];
+        let categories = [...this.props.categoryList];
 
         categories.forEach((category,i) => categories[i].status = "reset");
 
@@ -307,7 +305,7 @@ class Admin extends Component {
 
     categorySettingsDeleteCategoryClickHandler = (id, newStatus) => {
         
-        let categories = [...this.state.categoryList];
+        let categories = [...this.props.categoryList];
 
         let categoryIndex = categories.findIndex(category => category.id === id)
 
@@ -359,7 +357,7 @@ class Admin extends Component {
 
     deleteCategory = (id) => {
         Firebase.database().ref('categories').child(id).remove().then(() => {
-            this.removeCategoryFromPhotographs(this.state.imageList,id);
+            this.removeCategoryFromPhotographs(this.props.photographList,id);
         });
     }
 
@@ -389,7 +387,7 @@ class Admin extends Component {
     addCategoryToPhotographs = (photographsArray,addCategory) => {
 
         let addCategoryToPhotographs = {};
-        const categories = [...this.state.categoryList];
+        const categories = [...this.props.categoryList];
         const categoryData = categories.find(category => category.id === addCategory);
 
         if(categoryData) {
@@ -505,7 +503,7 @@ class Admin extends Component {
                         buttonHandler={this.deleteImageClickHandler}/>
                     </div>
                     {this.state.uploadingImages ? <ImagesNotification buttonDisabled={this.buttonDisabled()} closeNotification={() => (this.setState({uploadingImages : null}))} uploadingImages={this.state.uploadingImages}/> : null}
-                    <ListImages images={this.state.imageList} checkboxHandler={this.checkboxHandler} />
+                    <ListImages images={this.props.photographList} checkboxHandler={this.checkboxHandler} />
                 </div>
 
                 <Modal 
@@ -515,7 +513,7 @@ class Admin extends Component {
                     classNames={{
                         closeButton : styles.modalCloseButton,
                         modal : styles.modalContent}}> 
-                    <CategorySettings categoryName={this.state.addCategoryName} categoryNameHandler={this.categoryAddHandler} submitHandler={this.categorySettingsAddHandler} deleteHandler={(id, status) => this.categorySettingsDeleteCategoryClickHandler(id, status)} categories={this.state.categoryList}/>
+                    <CategorySettings categoryName={this.state.addCategoryName} categoryNameHandler={this.categoryAddHandler} submitHandler={this.categorySettingsAddHandler} deleteHandler={(id, status) => this.categorySettingsDeleteCategoryClickHandler(id, status)} categories={this.props.categoryList}/>
                 </Modal>
 
                 <Modal 
@@ -528,9 +526,9 @@ class Admin extends Component {
                     <EditCategory
                         deleteCategory={(images,category) => this.editCategoryDeleteCategoryClickHandler(images,category)}
                         addCategory={(images,category) => this.editCategoryAddCategoryClickHandler(images,category)}
-                        categories={this.state.categoryList}
+                        categories={this.props.categoryList}
                         selectedImages={this.state.checkedItemList}
-                        images={this.state.imageList}/>
+                        images={this.props.photographList}/>
                 </Modal>
 
                 <Modal 
@@ -554,4 +552,18 @@ class Admin extends Component {
     }
 }
 
-export default Admin;
+const mapStateToProps = state => {
+    return {
+        photographList : state.photographList,
+        categoryList : state.categoryList
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchPhotographList : () => dispatch(actionCreators.fetchPhotographs()),
+        fetchCategoryList : () => dispatch(actionCreators.fetchCategories()),
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Admin);
