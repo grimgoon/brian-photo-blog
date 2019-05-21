@@ -137,9 +137,6 @@ class Admin extends Component {
     
                 imageReference.put(file).then((snapshot) => {
                     
-    
-                    console.log(file);
-    
                     let image = new Image();
                     image.src = this.baseImageURL + imageName + "." + fileType + this.queryString;
         
@@ -158,6 +155,7 @@ class Admin extends Component {
     
                         }).then(() => {
                             this.updateItemUploadingImageList(file.name,"uploaded");
+                            this.props.fetchPhotographList();
                         });
                     }
                 }).catch((error) => {
@@ -166,6 +164,7 @@ class Admin extends Component {
         });
     
         this.updateOrderGroup(updateOrderCounter);
+        
     }
 
 
@@ -189,10 +188,6 @@ class Admin extends Component {
       
             imageList[index].status = status;
             imageList[index].errorMessage = objectErrorMessage;
-
-            
-
-            //this.setState({uploadErrorMessage : ''})
 
             return {uploadingImages : imageList}
         });
@@ -257,7 +252,8 @@ class Admin extends Component {
                 let newSelectedList =  [...this.state.checkedItemList];
                 newSelectedList.shift();
 
-                this.setState({checkedItemList : newSelectedList})
+                this.setState({checkedItemList : newSelectedList});
+                this.props.fetchPhotographList();
             });
         });
     }
@@ -347,9 +343,11 @@ class Admin extends Component {
         }
         else {
             const keyValue = slugifyString(categoryName);
+            console.log(keyValue);
 
             Firebase.database().ref('categories').child(keyValue).set(categoryName).then(result => {
                 this.setState({addCategoryName : ""});
+                this.props.fetchCategoryList();
             });
             // Error Handling?
         }
@@ -358,12 +356,11 @@ class Admin extends Component {
     deleteCategory = (id) => {
         Firebase.database().ref('categories').child(id).remove().then(() => {
             this.removeCategoryFromPhotographs(this.props.photographList,id);
+            this.props.fetchCategoryList();
         });
     }
 
     removeCategoryFromPhotographs = (photographsArray, deleteCategory) => {
-
-
         let removeCategoryFromPhotograph = {};
 
         photographsArray.forEach((photograph => {
@@ -378,7 +375,7 @@ class Admin extends Component {
         if(Object.keys(removeCategoryFromPhotograph).length) {
             // Error Handling?
             Firebase.database().ref('photographs').update(removeCategoryFromPhotograph).then((result) => {
-            
+                this.props.fetchPhotographList();
             });
         }
         
@@ -393,27 +390,21 @@ class Admin extends Component {
         if(categoryData) {
             photographsArray.forEach((photograph => {
 
-                let findCategory = Object.keys(photograph.categories).find(category => category === categoryData.id)
-
-                console.log(findCategory);
+                // let findCategory = Object.keys(photograph.categories).find(category => category === categoryData.id)
 
                 let key = '/' + photograph.id + '/categories/' + categoryData.id; 
                 addCategoryToPhotographs[key] = categoryData.name; 
             }));    
 
-            console.log(addCategoryToPhotographs);
-
             if(Object.keys(addCategoryToPhotographs).length) {
                 // Error Handling?
                 Firebase.database().ref('photographs').update(addCategoryToPhotographs).then((result) => {
+                    this.props.fetchPhotographList();
                 });
             }
         } else {
             //Error Handling:  Log that someone tried to send in a faulty category
         }
-       
-
-
     }
 
     editCategoryClickHandler = () => {

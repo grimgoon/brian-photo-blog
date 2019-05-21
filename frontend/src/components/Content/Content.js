@@ -161,8 +161,6 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchPhotographList : () => dispatch(actionCreators.fetchPhotographs()),
         fetchCategoryList : () => dispatch(actionCreators.fetchCategories()),
-        // updatePhotographList : (photographList) => dispatch({type : actionCreators.UPDATE_PHOTOGRAPH_LIST, payload : {photographList}}),
-        // updateCategoryList : (categoryList) => dispatch({type : actionCreators.UPDATE_CATEGORY_LIST, payload : {categoryList}}),
     }
 }
 
